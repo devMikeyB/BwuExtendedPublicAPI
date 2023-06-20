@@ -1,2 +1,2 @@
-# BwuExtendedPublicAPI
-Extended Java API created to support public scripts developed for the BotWithUs platform.
+# BwuExtendedAPI
+Extended Java API created to support scripts developed internally by the BotWithUs team.
