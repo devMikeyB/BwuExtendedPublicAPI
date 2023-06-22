@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Inventory implements Iterable<Item> {
 
@@ -103,6 +104,15 @@ public class Inventory implements Iterable<Item> {
         var itemsSet = new HashSet<>(items.stream().map(Item::getName).distinct().toList());
         return !Arrays.stream(names).map(itemsSet::contains).toList().contains(false);
     }
+
+    // TODO: Need to fix
+    public boolean containsAllOf(int... ids) {
+        var items = InventoryQuery.newQuery(id).itemId(ids).results();
+        var itemsSet = items.stream().map(Item::getItemId).collect(Collectors.toUnmodifiableSet());
+//        return !Arrays.stream(ids).map(i -> itemsSet.contains(i)).toList().contains(false);
+        return false;
+    }
+
     public boolean containsAllOf(Pattern... patterns) {
         var items = InventoryQuery.newQuery(id).itemName(patterns).results();
         var itemsList = items.stream().map(Item::getName).distinct().toList();

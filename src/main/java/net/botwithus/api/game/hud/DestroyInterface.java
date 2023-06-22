@@ -22,7 +22,7 @@ public class DestroyInterface {
      *   @param name The name of the item to be destroyed.
      */
     public static void destroyItem(String name) {
-        if (Backpack.contains(InventoryQuery.newQuery().itemName(name)) && !isOpen()) {
+        if (Backpack.contains(name) && !isOpen()) {
             Backpack.doAction(name, 8);
             Delay.delayUntil(Random.nextInt(800, 1400), (p) -> isOpen());
         }
