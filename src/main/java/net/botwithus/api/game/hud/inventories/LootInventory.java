@@ -89,9 +89,9 @@ public final class LootInventory {
      * @param ids the ids to check the items against
      * @return true if at least one item doesn't match the ids
      */
-    public static boolean containsAnyExcept(final int... ids) {
-        return LOOT_INVENTORY.containsAnyExcept(ids);
-    }
+//    public static boolean containsAnyExcept(final int... ids) {
+//        return LOOT_INVENTORY.containsAnyExcept(ids);
+//    }
 
     /**
      * Checks if any items don't match the given names
@@ -119,9 +119,9 @@ public final class LootInventory {
      * @param ids the ids to check the items against
      * @return true if at least one item matches an id
      */
-    public static boolean containsAnyOf(final int... ids) {
-        return LOOT_INVENTORY.containsAnyOf(ids);
-    }
+//    public static boolean containsAnyOf(final int... ids) {
+//        return LOOT_INVENTORY.containsAnyOf(ids);
+//    }
 
     /**
      * Checks if any item matches the given names
@@ -129,9 +129,9 @@ public final class LootInventory {
      * @param names the names to check the items against
      * @return true if at least one item matches a name
      */
-    public static boolean containsAnyOf(final String... names) {
-        return LOOT_INVENTORY.containsAnyOf(names);
-    }
+//    public static boolean containsAnyOf(final String... names) {
+//        return LOOT_INVENTORY.containsAnyOf(names);
+//    }
 
     /**
      * Checks if any item matches the given names
@@ -139,9 +139,9 @@ public final class LootInventory {
      * @param names the names to check the items against
      * @return true if at least one item matches a name
      */
-    public static boolean containsAnyOf(final Pattern... names) {
-        return LOOT_INVENTORY.containsAnyOf(names);
-    }
+//    public static boolean containsAnyOf(final Pattern... names) {
+//        return LOOT_INVENTORY.containsAnyOf(names);
+//    }
 
     /**
      * Checks if all of the items match the given {@link Predicate filter}
@@ -149,9 +149,9 @@ public final class LootInventory {
      * @param filter the filter to check the items against
      * @return true if all items match the filter
      */
-    public static boolean containsOnly(final Predicate<Item> filter) {
-        return LOOT_INVENTORY.containsOnly(filter);
-    }
+//    public static boolean containsOnly(final Predicate<Item> filter) {
+//        return LOOT_INVENTORY.containsOnly(filter);
+//    }
 
     /**
      * Checks if all of the items match the given {@link Predicate filter}s
@@ -159,10 +159,10 @@ public final class LootInventory {
      * @param filters the filters to check the items against
      * @return true if all items match at least one filter each
      */
-    @SafeVarargs
-    public static boolean containsOnly(final Predicate<Item>... filters) {
-        return LOOT_INVENTORY.containsOnly(filters);
-    }
+//    @SafeVarargs
+//    public static boolean containsOnly(final Predicate<Item>... filters) {
+//        return LOOT_INVENTORY.containsOnly(filters);
+//    }
 
     /**
      * Checks if all of the items match the given names
@@ -170,9 +170,9 @@ public final class LootInventory {
      * @param names the filters to check the items against
      * @return true if all items match at least one name each
      */
-    public static boolean containsOnly(final String... names) {
-        return LOOT_INVENTORY.containsOnly(names);
-    }
+//    public static boolean containsOnly(final String... names) {
+//        return LOOT_INVENTORY.containsOnly(names);
+//    }
 
     /**
      * Checks if all of the items match the given names
@@ -180,9 +180,9 @@ public final class LootInventory {
      * @param names the filters to check the items against
      * @return true if all items match at least one name each
      */
-    public static boolean containsOnly(final Pattern... names) {
-        return LOOT_INVENTORY.containsOnly(names);
-    }
+//    public static boolean containsOnly(final Pattern... names) {
+//        return LOOT_INVENTORY.containsOnly(names);
+//    }
 
     /**
      * Gets the total quantity of items
@@ -213,15 +213,15 @@ public final class LootInventory {
         return LOOT_INVENTORY.getQuantity(names);
     }
 
-    /**
-     * Gets the total quantity of items matching the names
-     *
-     * @param names the ids to check the items against
-     * @return the total quantity of items matching the names
-     */
-    public static int getQuantity(final Pattern... names) {
-        return LOOT_INVENTORY.getQuantity(names);
-    }
+//    /**
+//     * Gets the total quantity of items matching the names
+//     *
+//     * @param names the ids to check the items against
+//     * @return the total quantity of items matching the names
+//     */
+//    public static int getQuantity(final Pattern... names) {
+//        return LOOT_INVENTORY.getQuantity(names);
+//    }
 
     public static boolean close(boolean hotkey) {
         if (!isOpen()) {
@@ -245,13 +245,13 @@ public final class LootInventory {
     }
 
     //TODO: need #getValueOfBit
-    public static boolean isAreaLootEnabled() {
-        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(1) == 1;
-    }
-
-    public static boolean isEnabled() {
-        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(0) == 1;
-    }
+//    public static boolean isAreaLootEnabled() {
+//        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(1) == 1;
+//    }
+//
+//    public static boolean isEnabled() {
+//        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(0) == 1;
+//    }
 
     public static boolean isOpen() {
         return Interface.isInterfaceOpen(LOOT_INTERFACE);

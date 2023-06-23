@@ -33,6 +33,10 @@ public class Dialog {
         return new ArrayList<>();
     }
 
+    public static boolean hasOption(String string) {
+        return getOptions().stream().anyMatch(i -> i.contentEquals(string));
+    }
+
     public static boolean doAction(String optionText) {
         if (Interface.isInterfaceOpen(1188)) {
             return ComponentQuery.newQuery(1188).type(4).text(optionText, String::contentEquals).results().first().map(Component::doAction).orElse(false);
