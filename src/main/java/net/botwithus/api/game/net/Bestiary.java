@@ -6,8 +6,10 @@ import net.botwithus.rs3.util.collection.PairList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public final class Bestiary {
@@ -26,7 +28,7 @@ public final class Bestiary {
      */
     public static Beast lookupById(int id) {
         try {
-            URL url = new URL(BEAST_DATA_ADDRESS + id);
+            URL url = URI.create(BEAST_DATA_ADDRESS + id).toURL();
             String response = readUrlContent(url);
             if (!response.isEmpty()) {
                 return new Beast(response);
@@ -41,11 +43,11 @@ public final class Bestiary {
      */
     public static List<Beast> lookupByName(String name) {
         try {
-            String encodedName = URLEncoder.encode(name, "utf-8");
-            URL url = new URL(BEAST_SEARCH_ADDRESS + encodedName);
+            String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+            var url = URI.create(BEAST_SEARCH_ADDRESS + encodedName).toURL();
             String response = readUrlContent(url);
             List<Integer> ids = new ArrayList<>();
-            for (JsonElement element : new JsonParser().parse(response).getAsJsonArray()) {
+            for (JsonElement element : JsonParser.parseString(response).getAsJsonArray()) {
                 if (element.isJsonObject()) {
                     int value = element.getAsJsonObject().get("value").getAsInt();
                     String label = element.getAsJsonObject().get("label").getAsString();
@@ -75,11 +77,11 @@ public final class Bestiary {
      */
     public static List<Beast> lookupByArea(String area) {
         try {
-            String encodedArea = URLEncoder.encode(area, "utf-8");
-            URL url = new URL(AREA_BEASTS_ADDRESS + encodedArea);
+            String encodedArea = URLEncoder.encode(area, StandardCharsets.UTF_8);
+            URL url = URI.create(AREA_BEASTS_ADDRESS + encodedArea).toURL();
             String response = readUrlContent(url);
             List<Integer> ids = new ArrayList<>();
-            for (JsonElement element : new JsonParser().parse(response).getAsJsonArray()) {
+            for (JsonElement element : JsonParser.parseString(response).getAsJsonArray()) {
                 if (element.isJsonObject()) {
                     int value = element.getAsJsonObject().get("value").getAsInt();
                     ids.add(value);
@@ -103,10 +105,10 @@ public final class Bestiary {
      */
     public static List<Beast> lookupBySlayerCategory(int slayerCategoryId) {
         try {
-            URL url = new URL(SLAYER_CATEGORY_BEASTS_ADDRESS + slayerCategoryId);
+            URL url = URI.create(SLAYER_CATEGORY_BEASTS_ADDRESS + slayerCategoryId).toURL();
             String response = readUrlContent(url);
             List<Integer> ids = new ArrayList<>();
-            for (JsonElement element : new JsonParser().parse(response).getAsJsonArray()) {
+            for (JsonElement element : JsonParser.parseString(response).getAsJsonArray()) {
                 if (element.isJsonObject()) {
                     int value = element.getAsJsonObject().get("value").getAsInt();
                     ids.add(value);
@@ -130,10 +132,10 @@ public final class Bestiary {
      */
     public static List<Beast> lookupBySlayerCategory(String slayerCategory) {
         try {
-            URL url = new URL(SLAYER_CATEGORY_NAME_TO_IDS_ADDRESS);
+            URL url = URI.create(SLAYER_CATEGORY_NAME_TO_IDS_ADDRESS).toURL();
             String response = readUrlContent(url);
             Map<String, Integer> categories = new HashMap<>();
-            for (Map.Entry<String, JsonElement> element : new JsonParser().parse(response).getAsJsonObject().entrySet()) {
+            for (Map.Entry<String, JsonElement> element : JsonParser.parseString(response).getAsJsonObject().entrySet()) {
                 categories.put(element.getKey(), element.getValue().getAsInt());
             }
             Integer slayerCategoryId = categories.get(slayerCategory);
@@ -186,7 +188,7 @@ public final class Bestiary {
         private String slayercat;
 
         public Beast(String json) {
-            JsonObject root = new JsonParser().parse(json).getAsJsonObject();
+            JsonObject root = JsonParser.parseString(json).getAsJsonObject();
             this.name = root.get("name").getAsString();
             this.id = root.get("id").getAsInt();
             this.description = root.get("description").getAsString();
@@ -197,7 +199,7 @@ public final class Bestiary {
             this.attackable = root.get("attackable").getAsBoolean();
             this.aggressive = root.get("aggressive").getAsBoolean();
             this.poisonous = root.get("poisonous").getAsBoolean();
-            this.xp = Double.valueOf(root.get("xp").getAsString());
+            this.xp = Double.parseDouble(root.get("xp").getAsString());
             current = root.get("lifepoints");
             if (current != null) {
                 this.lifepoints = current.getAsInt();

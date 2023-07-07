@@ -1,10 +1,10 @@
 package net.botwithus.api.game.skills.divination;
 
-import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.item.Item;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
 import net.botwithus.rs3.types.ItemType;
+import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.variables.VariableManager;
 
 import java.util.List;

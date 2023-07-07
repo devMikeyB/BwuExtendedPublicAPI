@@ -1,6 +1,6 @@
 package net.botwithus.api.game.hud.prayer;
 
-import net.botwithus.internal.filesystem.configs.ConfigManager;
+import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.menu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.types.StructType;

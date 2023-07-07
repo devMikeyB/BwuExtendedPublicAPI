@@ -7,7 +7,7 @@ import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
 import net.botwithus.rs3.script.Delay;
 import net.botwithus.rs3.util.Random;
 import net.botwithus.rs3.world.Area;
-import net.botwithus.rs3.world.navigation.computations.Distance;
+import net.botwithus.rs3.world.navigation.Distance;
 
 public class SimpleInteract {
 

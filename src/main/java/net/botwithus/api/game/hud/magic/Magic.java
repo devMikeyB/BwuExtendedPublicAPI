@@ -1,6 +1,6 @@
 package net.botwithus.api.game.hud.magic;
 
-import net.botwithus.internal.filesystem.configs.ConfigManager;
+import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.types.StructType;
 import net.botwithus.rs3.types.enums.EnumType;
 import net.botwithus.rs3.types.enums.Value;

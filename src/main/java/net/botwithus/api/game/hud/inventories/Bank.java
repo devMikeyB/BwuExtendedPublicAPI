@@ -12,7 +12,7 @@ import net.botwithus.rs3.script.Delay;
 import net.botwithus.rs3.types.ItemOption;
 import net.botwithus.rs3.util.Random;
 import net.botwithus.rs3.variables.VariableManager;
-import net.botwithus.rs3.world.navigation.computations.Distance;
+import net.botwithus.rs3.world.navigation.Distance;
 
 import java.util.Arrays;
 import java.util.HashSet;

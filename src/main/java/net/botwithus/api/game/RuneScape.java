@@ -5,6 +5,6 @@ import net.botwithus.rs3.queries.Queries;
 
 public class RuneScape {
     public static boolean isLoggedIn() {
-        return Client.getGameState() == 30 && Queries.self() != null;
+        return Client.getGameState() == Client.GameState.LOGGED_IN && Queries.self() != null;
     }
 }
