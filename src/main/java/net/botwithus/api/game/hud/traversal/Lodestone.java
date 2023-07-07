@@ -12,7 +12,7 @@ public enum Lodestone {
     AL_KHARID(71565323, 28),
     ANACHRONIA(71565337, 44270),
     ARDOUGNE(71565324, 29),
-    ASHDALE(71565346, 35), // TODO What it be?
+    ASHDALE(71565346, 35), // TODO Need Varbit to know if they're available or not
     BANDIT_CAMP(71565321, 9482),
     BURTHORPE(71565325, 30),
     CANIFIS(71565339, 18523),
@@ -21,12 +21,12 @@ public enum Lodestone {
     EDGEVILLE(71565328, 33),
     EAGLES_PEAK(71565340, 18524),
     FALADOR(71565329, 34),
-    FORT_FORINTHRY(71565335, 35), // TODO What it be?
+    FORT_FORINTHRY(71565335, 35), // TODO Need Varbit to know if they're available or not
     FREMENNIK_PROVINCE(71565341, 18525),
     KARAMJA(71565342, 18526),
     LUMBRIDGE(71565330, 35),
     LUNAR_ISLE(71565322, 9482),
-    MENAPHOS(71565336, 35), // TODO What it be?
+    MENAPHOS(71565336, 35), // TODO Need Varbit to know if they're available or not
     OOGLOG(71565343, 18527),
     PORT_SARIM(71565331, 36),
     PRIFDDINAS(71565347, 24967),
