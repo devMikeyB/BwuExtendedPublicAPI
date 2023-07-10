@@ -1,11 +1,11 @@
 package net.botwithus.api.game.hud.traversal;
 
 
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.util.Random;
 import net.botwithus.rs3.menu.MiniMenu;
 import net.botwithus.rs3.menu.types.ComponentAction;
 import net.botwithus.rs3.queries.Queries;
+import net.botwithus.rs3.script.Delay;
+import net.botwithus.rs3.util.Random;
 import net.botwithus.rs3.variables.VariableManager;
 
 public enum Lodestone {
@@ -36,19 +36,21 @@ public enum Lodestone {
     VARROCK(71565334, 39),
     WILDERNESS_CRATER(71565345, 18529),
     YANILLE(71565338, 40);
-    
-    private int interactId, varbitId;
-    
-    private Lodestone (int interactId, int varbitId) {
+
+    private final int interactId;
+    private final int varbitId;
+
+    Lodestone(int interactId, int varbitId) {
         this.interactId = interactId;
         this.varbitId = varbitId;
     }
 
     //TODO: Update to no longer use MiniMenu.doAction
-    public boolean teleport() {
-        var player = Queries.self();
-        if (player == null)
+        public boolean teleport() {
+        var player = Client.self();
+        if (player == null) {
             return false;
+        }
         var coordinate = player.getPosition();
         if (!LodestoneNetwork.isOpen()) {
             LodestoneNetwork.open();
@@ -68,7 +70,7 @@ public enum Lodestone {
 
     public boolean isAvailable() {
         var result = VariableManager.getVarbitValue(varbitId);
-        switch(this) {
+        switch (this) {
             case LUNAR_ISLE -> {
                 return result >= 100;
             }

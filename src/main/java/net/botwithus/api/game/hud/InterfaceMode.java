@@ -11,8 +11,7 @@ public enum InterfaceMode {
         public void defineCommonInterfaces() {
             defineInterface(Prayer.class, "quick_prayer_toggle", 1430);
         }
-    },
-    LEGACY(new InterfaceManager()) {
+    }, LEGACY(new InterfaceManager()) {
         @Override
         public void defineCommonInterfaces() {
             defineInterface(Prayer.class, "quick_prayer_toggle", 1505);
@@ -44,7 +43,7 @@ public enum InterfaceMode {
     }
 
     public static InterfaceType getInterface(Class<?> clazz) {
-        if(Interface.isLegacyMode()) {
+        if (Interface.isLegacyMode()) {
             return LEGACY.manager.getInterface(clazz);
         } else {
             return MODERN.manager.getInterface(clazz);
@@ -52,7 +51,7 @@ public enum InterfaceMode {
     }
 
     public static InterfaceType getInterface(Class<?> clazz, String name) {
-        if(Interface.isLegacyMode()) {
+        if (Interface.isLegacyMode()) {
             return LEGACY.manager.getInterface(clazz, name);
         } else {
             return MODERN.manager.getInterface(clazz, name);

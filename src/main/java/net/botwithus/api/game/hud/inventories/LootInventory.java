@@ -6,7 +6,6 @@ import net.botwithus.rs3.item.Item;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.script.Delay;
 import net.botwithus.rs3.util.Random;
-import net.botwithus.rs3.variables.VariableManager;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -228,7 +227,8 @@ public final class LootInventory {
             return true;
         }
         final var button = ComponentQuery.newQuery(LOOT_INTERFACE).option("Close").results().first();
-        return button.isPresent() && button.get().doAction("Close") && Delay.delayUntil(Random.nextInt(1500, 3000), (p) -> !LootInventory.isOpen());
+        return button.isPresent() && button.get().doAction("Close") && Delay.delayUntil(Random.nextInt(1500, 3000),
+                                                                                        (p) -> !LootInventory.isOpen());
     }
 
     public static Item getItemIn(final int index) {
@@ -268,21 +268,25 @@ public final class LootInventory {
             return false;
         }
         int quantity = getQuantity(item.getItemId());
-        return LOOT_INVENTORY.doAction(item.getName()) && Delay.delayUntil(Random.nextInt(1500, 2500), (p) -> quantity == getQuantity(item.getItemId()));
+        return LOOT_INVENTORY.doAction(item.getName()) && Delay.delayUntil(Random.nextInt(1500, 2500),
+                                                                           (p) -> quantity == getQuantity(
+                                                                                   item.getItemId()));
     }
 
     public static boolean lootAll(boolean hotkeys) {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId())
-                .text("Loot All", String::contentEquals).results().first();
-        return component.isPresent() && component.get().doAction("Select") && Delay.delayUntil(Random.nextInt(1500, 3000), (p) -> !LootInventory.isOpen());
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId()).text("Loot All",
+                                                                                                        String::contentEquals).results().first();
+        return component.isPresent() && component.get().doAction("Select") && Delay.delayUntil(
+                Random.nextInt(1500, 3000), (p) -> !LootInventory.isOpen());
     }
 
     public static boolean lootCustom() {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId())
-                .text("Loot Custom", String::contentEquals).results().first();
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId()).text("Loot Custom",
+                                                                                                        String::contentEquals).results().first();
         if (component.isPresent()) {
             int quantity = getQuantity();
-            return component.get().doAction("Select") && Delay.delayUntil(Random.nextInt(1500, 3000), (p) -> getQuantity() == quantity);
+            return component.get().doAction("Select") && Delay.delayUntil(Random.nextInt(1500, 3000),
+                                                                          (p) -> getQuantity() == quantity);
         }
         return false;
     }

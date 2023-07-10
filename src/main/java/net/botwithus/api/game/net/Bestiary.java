@@ -135,7 +135,8 @@ public final class Bestiary {
             URL url = URI.create(SLAYER_CATEGORY_NAME_TO_IDS_ADDRESS).toURL();
             String response = readUrlContent(url);
             Map<String, Integer> categories = new HashMap<>();
-            for (Map.Entry<String, JsonElement> element : JsonParser.parseString(response).getAsJsonObject().entrySet()) {
+            for (Map.Entry<String, JsonElement> element : JsonParser.parseString(
+                    response).getAsJsonObject().entrySet()) {
                 categories.put(element.getKey(), element.getValue().getAsInt());
             }
             Integer slayerCategoryId = categories.get(slayerCategory);
@@ -235,7 +236,8 @@ public final class Bestiary {
                 this.slayercat = current.getAsString();
             }
             JsonObject animations = root.get("animations").getAsJsonObject();
-            animations.entrySet().forEach(animation -> this.animations.add(animation.getKey(), animation.getValue().getAsInt()));
+            animations.entrySet().forEach(
+                    animation -> this.animations.add(animation.getKey(), animation.getValue().getAsInt()));
             JsonArray areas = root.get("areas").getAsJsonArray();
             for (JsonElement element : areas) {
                 this.areas.add(element.getAsString());
@@ -320,26 +322,7 @@ public final class Bestiary {
 
         @Override
         public String toString() {
-            return "Beast{" +
-                    "slayercat='" + slayercat + '\'' +
-                    ", name='" + name + '\'' +
-                    ", id=" + id +
-                    ", description='" + description + '\'' +
-                    ", weakness='" + weakness + '\'' +
-                    ", attackable=" + attackable +
-                    ", aggressive=" + aggressive +
-                    ", poisonous=" + poisonous +
-                    ", xp=" + xp +
-                    ", lifepoints=" + lifepoints +
-                    ", level=" + level +
-                    ", defence=" + defence +
-                    ", attack=" + attack +
-                    ", magic=" + magic +
-                    ", ranged=" + ranged +
-                    ", slayerLevel=" + slayerLevel +
-                    ", size=" + size +
-                    ", members=" + members +
-                    '}';
+            return "Beast{" + "slayercat='" + slayercat + '\'' + ", name='" + name + '\'' + ", id=" + id + ", description='" + description + '\'' + ", weakness='" + weakness + '\'' + ", attackable=" + attackable + ", aggressive=" + aggressive + ", poisonous=" + poisonous + ", xp=" + xp + ", lifepoints=" + lifepoints + ", level=" + level + ", defence=" + defence + ", attack=" + attack + ", magic=" + magic + ", ranged=" + ranged + ", slayerLevel=" + slayerLevel + ", size=" + size + ", members=" + members + '}';
         }
     }
 }

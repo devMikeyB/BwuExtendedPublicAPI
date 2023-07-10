@@ -5,7 +5,8 @@ public abstract class BranchTask extends TreeTask {
     public boolean validate;
 
     @Override
-    public void execute() {};
+    public void execute() {
+    }
 
     @Override
     public abstract TreeTask successTask();

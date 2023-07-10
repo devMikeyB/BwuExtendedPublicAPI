@@ -21,7 +21,7 @@ public final class Slayer {
         if(value != null) {
             return value.getStringValue();
         }
-        return "none";
+        return null;
     }
 
     /**

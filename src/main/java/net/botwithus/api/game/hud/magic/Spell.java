@@ -1,9 +1,9 @@
 package net.botwithus.api.game.hud.magic;
 
-import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.menu.Interactable;
 import net.botwithus.rs3.menu.types.ComponentAction;
 import net.botwithus.rs3.types.StructType;
+import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.types.enums.EnumType;
 import net.botwithus.rs3.types.enums.Value;
 
@@ -20,20 +20,18 @@ public final class Spell implements Interactable<ComponentAction> {
     }
 
     /**
+     * Gets the required level of the item.
      *
-     *   Gets the required level of the item.
-     *
-     *   @return The required level of the item.
+     * @return The required level of the item.
      */
     public int getRequiredLevel() {
         return this.struct.getInt(2807);
     }
 
     /**
+     * Returns the name of the object.
      *
-     *   Returns the name of the object.
-     *
-     *   @return The name of the object.
+     * @return The name of the object.
      */
     public String getName() {
         return this.struct.getString(2974);
@@ -49,9 +47,9 @@ public final class Spell implements Interactable<ComponentAction> {
     }
 
     /**
+     * Gets the required runes for this spell.
      *
-     *   Gets the required runes for this spell.
-     *   @return a list of {@link RuneRequirement}s for this spell.
+     * @return a list of {@link RuneRequirement}s for this spell.
      */
     public List<RuneRequirement> getRequiredRunes() {
         int hasReq = struct.getInt(2806);

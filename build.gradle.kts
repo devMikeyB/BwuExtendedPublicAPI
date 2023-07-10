@@ -30,8 +30,8 @@ val copyJar by tasks.register<Copy>("copyJar") {
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = "20"
-    targetCompatibility = "20"
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
     options.compilerArgs.add("--enable-preview")
 }
 
@@ -47,7 +47,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "net.botwithus.xapi.public"
             artifactId = "api"
-            version = "1.0-SNAPSHOT"
+            version = "1.0.0-SNAPSHOT"
             from(components.getByName("java"))
         }
     }

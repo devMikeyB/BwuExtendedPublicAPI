@@ -1,19 +1,13 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.util.Random;
 import net.botwithus.rs3.menu.MiniMenu;
 import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.script.Delay;
+import net.botwithus.rs3.util.Random;
 
 public enum MagicCarpet {
-    AL_KHARID(1928, 28),
-    NORTH_POLLNIVNEACH(1928, 60),
-    SOUTH_POLLNIVNEACH(1928, 68),
-    NARDAH(1928, 68),
-    BEDABIN_CAMP(1928, 44),
-    UZER(1928, 52),
-    MENAPHOS(1928, 84),
-    SOPHANEM(1928, 92);
+    AL_KHARID(1928, 28), NORTH_POLLNIVNEACH(1928, 60), SOUTH_POLLNIVNEACH(1928, 68), NARDAH(1928, 68), BEDABIN_CAMP(
+            1928, 44), UZER(1928, 52), MENAPHOS(1928, 84), SOPHANEM(1928, 92);
     private final int interfaceIndex;
     private final int componentIndex;
 

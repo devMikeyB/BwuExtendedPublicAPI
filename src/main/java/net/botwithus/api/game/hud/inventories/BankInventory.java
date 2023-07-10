@@ -19,6 +19,7 @@ public class BankInventory extends Inventory {
         case 7 -> 8;
         default -> 1;
     };
+
     public BankInventory() {
         super(95, 517, 195, OPTION_MAPPER);
     }
@@ -27,13 +28,11 @@ public class BankInventory extends Inventory {
     public boolean doAction(int slot, int option) {
         ResultSet<Item> results = InventoryQuery.newQuery(getId()).slot(slot).results();
         Optional<Item> item = results.first();
-        if(item.isPresent()) {
+        if (item.isPresent()) {
             Item i = item.get();
             System.out.println("[Inventory#doAction(slot, option)]: " + i.getItemId());
-            ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex)
-                    .item(i.getItemId())
-                    .componentIndex(componentIndex)
-                    .results();
+            ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
+                    i.getItemId()).componentIndex(componentIndex).results();
             System.out.println("[Inventory#doAction(slot, option)]: QueryResults: " + queryResults.size());
             return queryResults.first().map(c -> c.doAction(option)).orElse(false);
         }

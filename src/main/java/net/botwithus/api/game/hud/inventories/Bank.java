@@ -37,10 +37,9 @@ public class Bank {
     }
 
     /**
+     * Opens the nearest bank.
      *
-     *   Opens the nearest bank.
-     *
-     *   @return {@code true} if the bank was successfully opened, {@code false} otherwise.
+     * @return {@code true} if the bank was successfully opened, {@code false} otherwise.
      */
     public static boolean open() {
         var obj = SceneObjectQuery.newQuery().name(bankPattern).results().nearest();
@@ -76,10 +75,9 @@ public class Bank {
     }
 
     /**
+     * Closes the bank interface.
      *
-     *   Closes the bank interface.
-     *
-     *   @return true if the interface was closed, false otherwise
+     * @return true if the interface was closed, false otherwise
      */
     public static boolean close() {
 //        return Interface.find(ComponentQuery.newQuery(517)
@@ -156,18 +154,18 @@ public class Bank {
     public static boolean withdraw(InventoryQuery query, int option) {
         query.setIds(95);
         Item item = query.results().first().orElse(Item.EMPTY);
-        if (item == Item.EMPTY)
+        if (item == Item.EMPTY) {
             return false;
+        }
         return BANK.doAction(item.getSlot(), option);
     }
 
     /**
+     * Withdraws an item from the inventory.
      *
-     *   Withdraws an item from the inventory.
-     *
-     *   @param itemName The name of the item to withdraw.
-     *   @param option The option to withdraw.
-     *   @return True if the item was successfully withdrawn, false otherwise.
+     * @param itemName The name of the item to withdraw.
+     * @param option   The option to withdraw.
+     * @return True if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdraw(String itemName, int option) {
         if (itemName != null && !itemName.isEmpty()) {
@@ -177,12 +175,11 @@ public class Bank {
     }
 
     /**
+     * Withdraws an item from the inventory.
      *
-     *   Withdraws an item from the inventory.
-     *
-     *   @param itemId The ID of the item to withdraw.
-     *   @param option The option of the item to withdraw.
-     *   @return True if the item was successfully withdrawn, false otherwise.
+     * @param itemId The ID of the item to withdraw.
+     * @param option The option of the item to withdraw.
+     * @return True if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdraw(int itemId, int option) {
         if (itemId >= 0) {
@@ -192,12 +189,11 @@ public class Bank {
     }
 
     /**
+     * Withdraws an item from the inventory.
      *
-     *   Withdraws an item from the inventory.
-     *
-     *   @param pattern The pattern of the item to withdraw.
-     *   @param option The option of the item to withdraw.
-     *   @return true if the item was successfully withdrawn, false otherwise.
+     * @param pattern The pattern of the item to withdraw.
+     * @param option  The option of the item to withdraw.
+     * @return true if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdraw(Pattern pattern, int option) {
         if (pattern != null) {
@@ -207,17 +203,19 @@ public class Bank {
     }
 
     /**
+     * Withdraws all of a given item from the inventory.
      *
-     *   Withdraws all of a given item from the inventory.
-     *   @param name The name of the item to withdraw.
-     *   @return true if the item was successfully withdrawn, false otherwise.
+     * @param name The name of the item to withdraw.
+     * @return true if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdrawAll(String name) {
         return withdraw(InventoryQuery.newQuery().itemName(name), 6);
     }
+
     public static boolean withdrawAll(int id) {
         return withdraw(InventoryQuery.newQuery().itemId(id), 6);
     }
+
     public static boolean withdrawAll(Pattern pattern) {
         return withdraw(InventoryQuery.newQuery().itemName(pattern), 6);
     }
@@ -228,12 +226,8 @@ public class Bank {
      * @return true if the items were successfully deposited, false otherwise
      */
     public static boolean depositAll() {
-        return Interface.find(ComponentQuery
-                        .newQuery(517)
-                        .option("Deposit carried items"))
-                .first()
-                .map(c -> c.doAction(1))
-                .orElse(false);
+        return Interface.find(ComponentQuery.newQuery(517).option("Deposit carried items")).first().map(
+                c -> c.doAction(1)).orElse(false);
     }
 
     /**
@@ -250,10 +244,11 @@ public class Bank {
     }
 
     public static boolean deposit(Item item, int option) {
-        if (item == Item.EMPTY)
+        if (item == Item.EMPTY) {
             return false;
+        }
         for (ItemOption bankOption : item.getType().bankOptions) {
-            if(bankOption.getOption() == option) {
+            if (bankOption.getOption() == option) {
                 return BANK.doAction(item.getSlot(), option);
             }
         }
@@ -261,35 +256,37 @@ public class Bank {
     }
 
     public static boolean depositAll(String... itemNames) {
-        return InventoryQuery.newQuery(93).itemName(itemNames).results().stream().map(i -> deposit(i, 7)).toList().contains(false);
+        return InventoryQuery.newQuery(93).itemName(itemNames).results().stream().map(
+                i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
-        return InventoryQuery.newQuery(93).itemId(itemIds).results().stream().map(i -> deposit(i, 7)).toList().contains(false);
+        return InventoryQuery.newQuery(93).itemId(itemIds).results().stream().map(i -> deposit(i, 7)).toList().contains(
+                false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
-        return InventoryQuery.newQuery(93).itemName(patterns).results().stream().map(i -> deposit(i, 7)).toList().contains(false);
+        return InventoryQuery.newQuery(93).itemName(patterns).results().stream().map(
+                i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(String... itemNames) {
         var nameSet = new HashSet<>(Arrays.asList(itemNames));
-        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(i -> !nameSet.contains(i.getName()));
+        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+                i -> !nameSet.contains(i.getName()));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
-        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(i -> !idSet.contains(i.getItemId()));
+        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+                i -> !idSet.contains(i.getItemId()));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
-        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(i ->
-                !Arrays.stream(patterns).map(p ->
-                        p.matcher(i.getName()).matches()
-                ).toList().contains(true)
-        );
+        var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+                i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
@@ -328,12 +325,11 @@ public class Bank {
     }
 
     /**
+     * Loads the given preset number.
      *
-     *   Loads the given preset number.
-     *
-     *   @param presetNumber the preset number to load
-     *   @return true if the preset was successfully loaded, false otherwise
-     *   @throws InterruptedException if the thread is interrupted while sleeping
+     * @param presetNumber the preset number to load
+     * @return true if the preset was successfully loaded, false otherwise
+     * @throws InterruptedException if the thread is interrupted while sleeping
      */
     public static boolean loadPreset(int presetNumber) {
         int presetBrowsingValue = VariableManager.getVarbitValue(PRESET_BROWSING_VARBIT_ID);
@@ -341,16 +337,16 @@ public class Bank {
             Delay.delay(Random.nextInt(300, 700));
             MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, 100, 33882231);
         }
-        return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9, 33882231);//presetComp != null && presetComp.doAction("Load");
+        return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9,
+                                 33882231);//presetComp != null && presetComp.doAction("Load");
     }
 
     /**
+     * Gets the value of a varbit in the inventory.
      *
-     *   Gets the value of a varbit in the inventory.
-     *
-     *   @param slot The inventory slot to check.
-     *   @param varbitId The varbit id to check.
-     *   @return The value of the varbit.
+     * @param slot     The inventory slot to check.
+     * @param varbitId The varbit id to check.
+     * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
         return VariableManager.getInventoryVarbit(95, slot, varbitId);

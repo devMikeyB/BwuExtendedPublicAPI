@@ -35,14 +35,8 @@ public class ArchMap {
 }
 
 enum Digsite {
-    KHARID_ET(0),
-    EVERLIGHT(1),
-    INFERNAL_SOURCE(2),
-    STORMGUARD(3),
-    WARFORGE(4),
-    ORTHEN(5),
-    SENNTISTEN(6),
-    ARCH_GUILD(-1);
+    KHARID_ET(0), EVERLIGHT(1), INFERNAL_SOURCE(2), STORMGUARD(3), WARFORGE(4), ORTHEN(5), SENNTISTEN(6), ARCH_GUILD(
+            -1);
 
     private final int mapId;
 
@@ -56,7 +50,8 @@ enum Digsite {
 
     @Override
     public String toString() {
-        return this.name().substring(0, 1).toUpperCase(Locale.ROOT) + this.name().substring(1).toLowerCase(Locale.ROOT).replace('_', ' ').replace('$', '-');
+        return this.name().substring(0, 1).toUpperCase(Locale.ROOT) + this.name().substring(1).toLowerCase(
+                Locale.ROOT).replace('_', ' ').replace('$', '-');
     }
 }
 

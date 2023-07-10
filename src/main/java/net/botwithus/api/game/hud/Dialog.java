@@ -12,7 +12,8 @@ import java.util.List;
 public class Dialog {
 
     public static boolean isOpen() {
-        return  Interface.isInterfaceOpen(1184) || Interface.isInterfaceOpen(1188) || Interface.isInterfaceOpen(1189) || Interface.isInterfaceOpen(1191);
+        return Interface.isInterfaceOpen(1184) || Interface.isInterfaceOpen(1188) || Interface.isInterfaceOpen(
+                1189) || Interface.isInterfaceOpen(1191);
     }
 
     public static boolean doContinue() {
@@ -28,7 +29,8 @@ public class Dialog {
 
     public static List<String> getOptions() {
         if (Interface.isInterfaceOpen(1188)) {
-            return ComponentQuery.newQuery(1188).componentIndex(8, 13, 18, 23, 28).type(4).results().stream().map(Component::getText).toList();
+            return ComponentQuery.newQuery(1188).componentIndex(8, 13, 18, 23, 28).type(4).results().stream().map(
+                    Component::getText).toList();
         }
         return new ArrayList<>();
     }
@@ -39,16 +41,16 @@ public class Dialog {
 
     public static boolean doAction(String optionText) {
         if (Interface.isInterfaceOpen(1188)) {
-            return ComponentQuery.newQuery(1188).type(4).text(optionText, String::contentEquals).results().first().map(Component::doAction).orElse(false);
+            return ComponentQuery.newQuery(1188).type(4).text(optionText, String::contentEquals).results().first().map(
+                    Component::doAction).orElse(false);
         }
         return false;
     }
 
     /**
+     * Retrieves the text from a component if the interface is open.
      *
-     *   Retrieves the text from a component if the interface is open.
-     *
-     *   @return The text from the component, or an empty string if the interface is not open.
+     * @return The text from the component, or an empty string if the interface is not open.
      */
     public static String getText() {
         if (isOpen()) {
