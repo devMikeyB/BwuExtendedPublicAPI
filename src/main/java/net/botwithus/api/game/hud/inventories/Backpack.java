@@ -1,7 +1,7 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.item.Item;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
+import net.botwithus.rs3.interfaces.item.Item;
 
 import java.util.List;
 import java.util.Optional;
@@ -106,8 +106,8 @@ public final class Backpack {
         return BACKPACK.containsAnyExcept(patterns);
     }
 
-    public static boolean doAction(int slot, String option) {
-        return BACKPACK.doAction(slot, option);
+    public static boolean interact(int slot, String option) {
+        return BACKPACK.interact(slot, option);
     }
 
     /**
@@ -117,8 +117,8 @@ public final class Backpack {
      * @param option The option to perform on the slot.
      * @return Whether the action was successful.
      */
-    public static boolean doAction(int slot, int option) {
-        return BACKPACK.doAction(slot, option);
+    public static boolean interact(int slot, int option) {
+        return BACKPACK.interact(slot, option);
     }
 
     /**
@@ -127,8 +127,8 @@ public final class Backpack {
      * @param name The name of the action to be executed.
      * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name) {
-        return BACKPACK.doAction(name);
+    public static boolean interact(String name) {
+        return BACKPACK.interact(name);
     }
 
     /**
@@ -138,8 +138,8 @@ public final class Backpack {
      * @param option The action to perform on the item.
      * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name, String option) {
-        return BACKPACK.doAction(name, option);
+    public static boolean interact(String name, String option) {
+        return BACKPACK.interact(name, option);
     }
 
     /**
@@ -151,8 +151,8 @@ public final class Backpack {
      * @param optionpred The predicate to be used to validate the option.
      * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
-        return BACKPACK.doAction(name, option, namepred, optionpred);
+    public static boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
+        return BACKPACK.interact(name, option, namepred, optionpred);
     }
 
     /**
@@ -162,25 +162,16 @@ public final class Backpack {
      * @param option The option to be used for the action
      * @return The result of the action
      */
-    public static boolean doAction(String name, int option) {
-        return BACKPACK.doAction(name, option);
+    public static boolean interact(String name, int option) {
+        return BACKPACK.interact(name, option);
     }
 
-    public static boolean doAction(Pattern namePattern, String option) {
-        return BACKPACK.doAction(namePattern, option);
+    public static boolean interact(Pattern namePattern, String option) {
+        return BACKPACK.interact(namePattern, option);
     }
 
-    public static boolean doAction(Pattern namePattern, int option) {
-        return BACKPACK.doAction(namePattern, option);
-    }
-
-    /**
-     * Returns the capacity of the backpack.
-     *
-     * @return The capacity of the backpack.
-     */
-    public static int capacity() {
-        return BACKPACK.getSlotCount();
+    public static boolean interact(Pattern namePattern, int option) {
+        return BACKPACK.interact(namePattern, option);
     }
 
     /**
@@ -200,11 +191,11 @@ public final class Backpack {
      * @param name The name of the item to retrieve.
      * @return An {@link Optional} containing the item if it exists, or an empty {@link Optional} if it does not.
      */
-    public static Optional<Item> getItem(String name) {
+    public static Item getItem(String name) {
         return BACKPACK.getItem(name);
     }
 
-    public static Optional<Item> getItem(Pattern pattern) {
+    public static Item getItem(Pattern pattern) {
         return BACKPACK.getItem(pattern);
     }
 
@@ -212,7 +203,7 @@ public final class Backpack {
         return BACKPACK.getItems();
     }
 
-    public static Optional<Item> getSelectedItem() {
+    public static Item getSelectedItem() {
         return InventoryQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
     }
 }

@@ -1,10 +1,10 @@
 package net.botwithus.api.game.hud.summoning;
 
-import net.botwithus.api.game.entity.interfaces.Onymous;
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.entities.Onymous;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.skills.Skills;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -19,20 +19,20 @@ public class Summoning {
      * Gets the remaining time for the currently summoned familiar (in minutes)
      */
     public static int getMinutesRemaining() {
-        var val = VariableManager.getVarbitValue(MINUTES_REMAINING_VARBIT_ID);
+        var val = VarManager.getVarbitValue(MINUTES_REMAINING_VARBIT_ID);
         return val >= 0 ? val : 0;
     }
 
     //TODO: Need to replace MiniMenu.doAction call
     public static void triggerSpecial() {
-        MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, 43384870);
+        MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 43384870);
     }
 
     /**
      * Gets the current amount of summoning points available to the local player
      */
     public static int getPoints() {
-        var value = VariableManager.getVarbitValue(VARBIT_CURRENT_SUMMONING_POINTS);
+        var value = VarManager.getVarbitValue(VARBIT_CURRENT_SUMMONING_POINTS);
         if (value >= 0) {
             return value / 10;
         }
@@ -51,7 +51,7 @@ public class Summoning {
      * Gets the amount of special move points available
      */
     public static int getSpecialMovePoints() {
-        return VariableManager.getVarPlayerValue(VARP_SPECIAL_MOVE_POINTS);
+        return VarManager.getVarPlayerValue(VARP_SPECIAL_MOVE_POINTS);
     }
 
     public static Set<Familiar> getBeastOfBurdens() {

@@ -1,6 +1,6 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.interfaces.Interface;
+import net.botwithus.rs3.interfaces.Interfaces;
 import net.botwithus.rs3.queries.builders.npc.NpcQuery;
 
 public class MagicCarpetNetwork {
@@ -10,7 +10,7 @@ public class MagicCarpetNetwork {
      * @return true if the interface is open, false otherwise.
      */
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(1928);
+        return Interfaces.isOpen(1928);
     }
 
     /**
@@ -20,6 +20,6 @@ public class MagicCarpetNetwork {
      */
     public static boolean open() {
         var npc = NpcQuery.newQuery().name("Rug merchant").option("Travel").results().nearest();
-        return npc.isPresent() && npc.get().doAction("Travel");
+        return npc != null && npc.interact("Travel");
     }
 }

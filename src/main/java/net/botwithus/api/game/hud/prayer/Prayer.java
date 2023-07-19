@@ -1,11 +1,10 @@
 package net.botwithus.api.game.hud.prayer;
 
 import net.botwithus.api.game.hud.InterfaceMode;
-import net.botwithus.rs3.interfaces.type.InterfaceType;
-import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.skills.Skills;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 public final class Prayer {
 
@@ -18,7 +17,7 @@ public final class Prayer {
      * @return true if the Quick Prayer toggle is active, false otherwise
      */
     public static boolean isQuickPrayerActive() {
-        return VariableManager.getVarbitValue(5941) == 1;
+        return VarManager.getVarbitValue(5941) == 1;
     }
 
     /**
@@ -27,9 +26,9 @@ public final class Prayer {
      * @return {@code true} if the quick prayer setting was successfully toggled, {@code false} otherwise.
      */
     public static boolean toggleQuickPrayer() {
-        InterfaceType toggle = InterfaceMode.getInterface(Prayer.class, "quick_prayer_toggle");
+        var toggle = InterfaceMode.getInterface(Prayer.class, "quick_prayer_toggle");
         return ComponentQuery.newQuery(toggle.getInterfaceIndex()).option(
-                "Turn quick prayers on").results().first().map(c -> c.doAction(1)).orElse(false);
+                "Turn quick prayers on").results().first().map(c -> c.interact(1)).orElse(false);
     }
 
     /**
@@ -38,7 +37,7 @@ public final class Prayer {
      * @return The current prayer points of the player.
      */
     public static int getPrayerPoints() {
-        return VariableManager.getVarbitValue(16736);
+        return VarManager.getVarbitValue(16736);
     }
 
     /**
@@ -67,7 +66,7 @@ public final class Prayer {
      * @return {@code true} if the {@link PrayerAbility} was successfully toggled, {@code false} otherwise.
      */
     public static boolean toggle(PrayerAbility ability) {
-        return ability.doAction(ComponentAction.COMPONENT);
+        return ability.interact(ComponentAction.COMPONENT);
     }
 
 

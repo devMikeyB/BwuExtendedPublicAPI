@@ -1,18 +1,17 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.item.Item;
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.interfaces.Interfaces;
+import net.botwithus.rs3.interfaces.item.Item;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
 import net.botwithus.rs3.queries.builders.npc.NpcQuery;
 import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.types.ItemOption;
-import net.botwithus.rs3.util.Random;
-import net.botwithus.rs3.variables.VariableManager;
-import net.botwithus.rs3.world.navigation.Distance;
+import net.botwithus.rs3.script.Execution;
+import net.botwithus.rs3.util.RandomGenerator;
+import net.botwithus.rs3.vars.VarManager;
+import net.botwithus.rs3.world.Distance;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,20 +45,20 @@ public class Bank {
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
         var useObj = true;
 
-        if (obj.isPresent() && npc.isPresent()) {
-            useObj = Distance.to(obj.get()) < Distance.to(npc.get());
+        if (obj != null && npc != null) {
+            useObj = Distance.to(obj) < Distance.to(npc);
         }
-        if (obj.isPresent() && useObj) {
-            String[] actions = obj.get().getOptions();
-            if (actions.length > 0) {
-                var action = Arrays.stream(actions).filter(i -> i != null && i.length() > 0).findFirst();
-                return action.isPresent() && obj.get().doAction(action.get());
+        if (obj != null && useObj) {
+            var actions = obj.getOptions();
+            if (actions.size() > 0) {
+                var action = actions.stream().filter(i -> i != null && i.length() > 0).findFirst();
+                return action.isPresent() && obj.interact(action.get());
             } else {
                 System.out.println("[Bank] No options on object");
                 return false;
             }
-        } else if (npc.isPresent()) {
-            return npc.get().doAction("Bank");
+        } else if (npc != null) {
+            return npc.interact("Bank");
         }
 
         return false;
@@ -71,7 +70,7 @@ public class Bank {
      * @return true if the bank is open, false otherwise
      */
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(517);
+        return Interfaces.isOpen(517);
     }
 
     /**
@@ -85,7 +84,8 @@ public class Bank {
 //                .first()
 //                .map(Component::doAction)
 //                .orElse(false);
-        return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, 33882418);
+        // TODO: Update to no longer use MiniMenu.doAction
+        return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 33882418);
     }
 
     /**
@@ -94,7 +94,7 @@ public class Bank {
      * @return returns an array containing all items in the bank.
      */
     public static Item[] getItems() {
-        return InventoryQuery.newQuery(95).results().stream().filter(i -> i.getItemId() != -1).toArray(Item[]::new);
+        return InventoryQuery.newQuery(95).results().stream().filter(i -> i.getId() != -1).toArray(Item[]::new);
     }
 
 
@@ -105,7 +105,7 @@ public class Bank {
      * @return returns an integer representing the count of the item
      */
     public static int count(InventoryQuery query) {
-        return query.results().stream().mapToInt(Item::getAmount).sum();
+        return query.results().stream().mapToInt(Item::getStackSize).sum();
     }
 
     /**
@@ -115,7 +115,7 @@ public class Bank {
      * @return returns the item, or null if not found.
      */
     public static Item first(InventoryQuery query) {
-        return query.results().first().orElse(Item.EMPTY);
+        return query.results().first();
     }
 
     /**
@@ -138,11 +138,11 @@ public class Bank {
     }
 
     public static boolean contains(String... itemNames) {
-        return !InventoryQuery.newQuery(95).itemName(itemNames).results().isEmpty();
+        return !InventoryQuery.newQuery(95).name(itemNames).results().isEmpty();
     }
 
     public static boolean contains(Pattern itemNamePattern) {
-        return !InventoryQuery.newQuery(95).itemName(itemNamePattern).results().isEmpty();
+        return !InventoryQuery.newQuery(95).name(itemNamePattern).results().isEmpty();
     }
 
     /**
@@ -153,11 +153,8 @@ public class Bank {
      */
     public static boolean withdraw(InventoryQuery query, int option) {
         query.setIds(95);
-        Item item = query.results().first().orElse(Item.EMPTY);
-        if (item == Item.EMPTY) {
-            return false;
-        }
-        return BANK.doAction(item.getSlot(), option);
+        Item item = query.results().first();
+        return item != null && BANK.interact(item.getSlot(), option);
     }
 
     /**
@@ -169,7 +166,7 @@ public class Bank {
      */
     public static boolean withdraw(String itemName, int option) {
         if (itemName != null && !itemName.isEmpty()) {
-            return withdraw(InventoryQuery.newQuery().itemName(itemName), option);
+            return withdraw(InventoryQuery.newQuery().name(itemName), option);
         }
         return false;
     }
@@ -197,7 +194,7 @@ public class Bank {
      */
     public static boolean withdraw(Pattern pattern, int option) {
         if (pattern != null) {
-            return withdraw(InventoryQuery.newQuery().itemName(pattern), option);
+            return withdraw(InventoryQuery.newQuery().name(pattern), option);
         }
         return false;
     }
@@ -209,7 +206,7 @@ public class Bank {
      * @return true if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdrawAll(String name) {
-        return withdraw(InventoryQuery.newQuery().itemName(name), 6);
+        return withdraw(InventoryQuery.newQuery().name(name), 6);
     }
 
     public static boolean withdrawAll(int id) {
@@ -217,7 +214,7 @@ public class Bank {
     }
 
     public static boolean withdrawAll(Pattern pattern) {
-        return withdraw(InventoryQuery.newQuery().itemName(pattern), 6);
+        return withdraw(InventoryQuery.newQuery().name(pattern), 6);
     }
 
     /**
@@ -226,8 +223,8 @@ public class Bank {
      * @return true if the items were successfully deposited, false otherwise
      */
     public static boolean depositAll() {
-        return Interface.find(ComponentQuery.newQuery(517).option("Deposit carried items")).first().map(
-                c -> c.doAction(1)).orElse(false);
+        var comp = ComponentQuery.newQuery(517).option("Deposit carried items").results().first();
+        return comp != null && comp.interact(1);
     }
 
     /**
@@ -239,24 +236,16 @@ public class Bank {
      */
     public static boolean deposit(InventoryQuery query, int option) {
         query.setIds(93);
-        Item item = query.results().first().orElse(Item.EMPTY);
+        Item item = query.results().first();
         return deposit(item, option);
     }
 
     public static boolean deposit(Item item, int option) {
-        if (item == Item.EMPTY) {
-            return false;
-        }
-        for (ItemOption bankOption : item.getType().bankOptions) {
-            if (bankOption.getOption() == option) {
-                return BANK.doAction(item.getSlot(), option);
-            }
-        }
-        return BACKPACK.doAction(item.getSlot(), option);
+        return item != null && BACKPACK.interact(item.getSlot(), option);
     }
 
     public static boolean depositAll(String... itemNames) {
-        return InventoryQuery.newQuery(93).itemName(itemNames).results().stream().map(
+        return InventoryQuery.newQuery(93).name(itemNames).results().stream().map(
                 i -> deposit(i, 7)).toList().contains(false);
     }
 
@@ -266,7 +255,7 @@ public class Bank {
     }
 
     public static boolean depositAll(Pattern... patterns) {
-        return InventoryQuery.newQuery(93).itemName(patterns).results().stream().map(
+        return InventoryQuery.newQuery(93).name(patterns).results().stream().map(
                 i -> deposit(i, 7)).toList().contains(false);
     }
 
@@ -280,7 +269,7 @@ public class Bank {
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
         var items = InventoryQuery.newQuery(93).option("Deposit-All").results().stream().filter(
-                i -> !idSet.contains(i.getItemId()));
+                i -> !idSet.contains(i.getId()));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
@@ -310,7 +299,7 @@ public class Bank {
      * @return True if the item was successfully deposited, false otherwise.
      */
     public static boolean deposit(String name, BiFunction<String, CharSequence, Boolean> spred, int option) {
-        return deposit(InventoryQuery.newQuery(93).itemName(name, spred), option);
+        return deposit(InventoryQuery.newQuery(93).name(name, spred), option);
     }
 
     /**
@@ -331,14 +320,15 @@ public class Bank {
      * @return true if the preset was successfully loaded, false otherwise
      * @throws InterruptedException if the thread is interrupted while sleeping
      */
+    // TODO: Update to no longer use MiniMenu.doAction
     public static boolean loadPreset(int presetNumber) {
-        int presetBrowsingValue = VariableManager.getVarbitValue(PRESET_BROWSING_VARBIT_ID);
+        int presetBrowsingValue = VarManager.getVarbitValue(PRESET_BROWSING_VARBIT_ID);
         if ((presetNumber >= 10 && presetBrowsingValue < 1) || (presetNumber < 10 && presetBrowsingValue > 0)) {
-            Delay.delay(Random.nextInt(300, 700));
-            MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, 100, 33882231);
+            Execution.delay(RandomGenerator.nextInt(300, 700));
+            MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, 100, 33882231);
         }
-        return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9,
-                                 33882231);//presetComp != null && presetComp.doAction("Load");
+        return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9,
+                                 33882231);//presetComp != null && presetComp.interact("Load");
     }
 
     /**
@@ -349,6 +339,6 @@ public class Bank {
      * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
-        return VariableManager.getInventoryVarbit(95, slot, varbitId);
+        return VarManager.getInventoryVarbit(95, slot, varbitId);
     }
 }

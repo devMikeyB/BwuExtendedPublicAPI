@@ -4,7 +4,7 @@ import net.botwithus.rs3.menu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.types.StructType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.variables.VarManager;
 
 public enum NormalBook implements PrayerAbility {
     THICK_SKIN(14541, 16739), ROCK_SKIN(14542, 16739), STEEL_SKIN(14543, 16739), BURST_OF_STRENGTH(14545,
@@ -36,7 +36,7 @@ public enum NormalBook implements PrayerAbility {
     }
 
     public int getVarbitValue() {
-        return VariableManager.getVarbitValue(varbitId);
+        return VarManager.getVarbitValue(varbitId);
     }
 
     public int getLevel() {
@@ -54,15 +54,15 @@ public enum NormalBook implements PrayerAbility {
     }
 
     @Override
-    public boolean doAction(ComponentAction type) {
+    public boolean interact(ComponentAction type) {
         int spriteId = getStruct().getInt(735);
-        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.doAction(1)).orElse(false);
+        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.interact(1)).orElse(false);
     }
 
     @Override
-    public boolean doAction(int option) {
+    public boolean interact(int option) {
         int spriteId = getStruct().getInt(735);
-        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.doAction(option)).orElse(
+        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.interact(option)).orElse(
                 false);
     }
 }

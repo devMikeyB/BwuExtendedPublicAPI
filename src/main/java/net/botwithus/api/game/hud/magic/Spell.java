@@ -107,14 +107,14 @@ public final class Spell implements Interactable<ComponentAction> {
     }
 
     @Override
-    public boolean doAction(ComponentAction type) {
+    public boolean interact(ComponentAction type) {
 
 
         return false;
     }
 
     @Override
-    public boolean doAction(int option) {
+    public boolean interact(int option) {
         return false;
     }
 

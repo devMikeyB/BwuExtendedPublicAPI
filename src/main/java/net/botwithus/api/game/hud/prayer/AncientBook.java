@@ -1,10 +1,10 @@
 package net.botwithus.api.game.hud.prayer;
 
-import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.types.StructType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 public enum AncientBook implements PrayerAbility {
     BERSERKER(14592, 16766), DEFLECT_SUMMONING(14593, 16767), DEFLECT_MAGIC(14594, 16768), DEFLECT_MISSILES(14595,
@@ -46,11 +46,11 @@ public enum AncientBook implements PrayerAbility {
     }
 
     public int getVarbitValue() {
-        return VariableManager.getVarbitValue(varbitId);
+        return VarManager.getVarbitValue(varbitId);
     }
 
     public int getLevel() {
-        return getStruct().getInt(2807);
+        return getStruct().getId().getInt(2807);
     }
 
     @Override
@@ -59,15 +59,15 @@ public enum AncientBook implements PrayerAbility {
     }
 
     @Override
-    public boolean doAction(ComponentAction type) {
+    public boolean interact(ComponentAction type) {
         int spriteId = getStruct().getInt(735);
-        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.doAction(1)).orElse(false);
+        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.interact(1)).orElse(false);
     }
 
     @Override
-    public boolean doAction(int option) {
+    public boolean interact(int option) {
         int spriteId = getStruct().getInt(735);
-        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.doAction(option)).orElse(
+        return ComponentQuery.newQuery(1458).spriteId(spriteId).results().first().map(c -> c.interact(option)).orElse(
                 false);
     }
 }

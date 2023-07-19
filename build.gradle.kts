@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.botwithus.xapi"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -18,7 +18,7 @@ tasks.withType<JavaCompile> {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("net.botwithus.rs3:api:1.0.0-SNAPSHOT")
+    implementation("net.botwithus.rs3:api:1.0.1-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
@@ -30,8 +30,8 @@ val copyJar by tasks.register<Copy>("copyJar") {
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "20"
+    targetCompatibility = "20"
     options.compilerArgs.add("--enable-preview")
 }
 

@@ -1,8 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.item.Item;
+import net.botwithus.rs3.interfaces.item.Item;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public final class Equipment {
      * @param slot The slot to get the item from.
      * @return An {@link Optional} containing the item in the slot, or an empty {@link Optional} if there is no item in the slot.
      */
-    public static Optional<Item> getItemIn(Slot slot) {
+    public static Item getItemIn(Slot slot) {
         return EQUIPMENT.getSlot(slot.getIndex());
     }
 
@@ -59,7 +59,7 @@ public final class Equipment {
      * @return true if the item is present in the inventory, false otherwise.
      */
     public static boolean contains(String name) {
-        return EQUIPMENT.contains(InventoryQuery.newQuery().itemName(name));
+        return EQUIPMENT.contains(InventoryQuery.newQuery().name(name));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class Equipment {
      * @return True if an item with a matching name is present in the inventory, false otherwise.
      */
     public static boolean contains(Pattern pattern) {
-        return EQUIPMENT.contains(InventoryQuery.newQuery().itemName(pattern));
+        return EQUIPMENT.contains(InventoryQuery.newQuery().name(pattern));
     }
 
     /**
@@ -79,8 +79,8 @@ public final class Equipment {
      * @param option The option to interact with.
      * @return True if the interaction was successful, false otherwise.
      */
-    public static boolean doAction(Slot slot, String option) {
-        return EQUIPMENT.doAction(slot.getIndex(), option);
+    public static boolean interact(Slot slot, String option) {
+        return EQUIPMENT.interact(slot.getIndex(), option);
     }
 
     /**
@@ -90,7 +90,7 @@ public final class Equipment {
      * @return true if the item was successfully unequipped, false otherwise.
      */
     public static boolean unequipSlot(Slot slot) {
-        return doAction(slot, "Remove");
+        return interact(slot, "Remove");
     }
 
     /**
@@ -101,6 +101,6 @@ public final class Equipment {
      * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
-        return VariableManager.getInventoryVarbit(94, slot, varbitId);
+        return VarManager.getInventoryVarbit(94, slot, varbitId);
     }
 }

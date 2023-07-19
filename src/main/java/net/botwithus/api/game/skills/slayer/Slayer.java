@@ -1,9 +1,9 @@
 package net.botwithus.api.game.skills.slayer;
 
+import com.sun.jdi.Value;
+import net.botwithus.rs3.types.EnumType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.types.enums.EnumType;
-import net.botwithus.rs3.types.enums.Value;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 public final class Slayer {
 
@@ -15,7 +15,7 @@ public final class Slayer {
      *   @return The current reaper assignment, or "none" if none is active.
      */
     public String getReaperAssignment() {
-        int taskId = VariableManager.getVarbitValue(22901);
+        int taskId = VarManager.getVarbitValue(22901);
         EnumType tasks = ConfigManager.getEnumType(9197);
         Value value = tasks.variants.get(taskId);
         if(value != null) {
@@ -31,7 +31,7 @@ public final class Slayer {
      *   @return The remaining reaper kills for the current task.
      */
     public static int getRemainingReaperKills() {
-        return VariableManager.getVarbitValue(22902);
+        return VarManager.getVarbitValue(22902);
     }
 
 }

@@ -1,11 +1,11 @@
 package net.botwithus.api.game.skills.divination;
 
-import net.botwithus.rs3.item.Item;
+import net.botwithus.rs3.interfaces.item.Item;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
 import net.botwithus.rs3.types.ItemType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 import java.util.List;
 
@@ -82,9 +82,9 @@ public final class HallOfMemories {
             return false;
         }
         for (Item result : results) {
-            if(result.getItemId() == memoryBot.getItemId()) {
+            if(result.getId() == memoryBot.getItemId()) {
                 int fullAmount = result.getType().getParams().getInt(7176);
-                int amount = VariableManager.getInventoryVarbit(93, result.getSlot(), memoryBot.getVarbitId());
+                int amount = VarManager.getInventoryVarbit(93, result.getSlot(), memoryBot.getVarbitId());
                 return amount == fullAmount;
             }
         }
@@ -93,7 +93,7 @@ public final class HallOfMemories {
 
     private static boolean isMemoryJarFull(Item memoryJar) {
         int fullJar = memoryJar.getType().getParams().getInt(7176);
-        int filledAmount = VariableManager.getInventoryVarbit(93, memoryJar.getSlot(), 40679);
+        int filledAmount = VarManager.getInventoryVarbit(93, memoryJar.getSlot(), 40679);
         return filledAmount == fullJar;
     }
 

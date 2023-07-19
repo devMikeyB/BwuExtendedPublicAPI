@@ -1,9 +1,6 @@
 package net.botwithus.api.game.hud;
 
 import net.botwithus.api.game.hud.prayer.Prayer;
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.interfaces.type.InterfaceManager;
-import net.botwithus.rs3.interfaces.type.InterfaceType;
 
 public enum InterfaceMode {
     MODERN(new InterfaceManager()) {

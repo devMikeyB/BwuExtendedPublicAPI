@@ -1,9 +1,9 @@
 package net.botwithus.api.game.hud.summoning;
 
-import net.botwithus.api.game.entity.interfaces.Onymous;
 import net.botwithus.api.game.hud.Dialog;
+import net.botwithus.rs3.entities.Onymous;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.script.Delay;
+import net.botwithus.rs3.script.Execution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -366,8 +366,8 @@ public enum Familiar implements Onymous {
                 3, "Call follower", "Call Follower"), DISMISS_FOLLOWER(4, "Dismiss follower", "Dismiss") {
             @Override
             public boolean select() {
-                return Dialog.hasOption("Yes.") && Delay.delayUntil(2000, (p) -> !Dialog.hasOption(
-                        "Yes.")) && Dialog.doAction("Yes.");
+                return Dialog.hasOption("Yes.") && Execution.delayUntil(2000, () -> !Dialog.hasOption(
+                        "Yes.")) && Dialog.interact("Yes.");
             }
         }, TAKE_BOB(5, "Take BoB", "Take BoB"), RENEW_FAMILIAR(6, "Renew familiar", "Renew Familiar"), INTERACT(7,
                                                                                                                 "Interact",
@@ -390,7 +390,7 @@ public enum Familiar implements Onymous {
         public boolean select() {
             var ic1 = ComponentQuery.newQuery(1430).option(action).results().first();
             var ic2 = ComponentQuery.newQuery(1506).option(action).results().first();
-            return (ic1.isPresent() && ic1.get().doAction(action)) || (ic2.isPresent() && ic2.get().doAction(action));
+            return (ic1 != null && ic1.interact(action)) || (ic2 != null && ic2.interact(action));
         }
 
     }

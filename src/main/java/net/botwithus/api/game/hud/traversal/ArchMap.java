@@ -1,25 +1,26 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
-import net.botwithus.rs3.menu.types.ObjectAction;
-import net.botwithus.rs3.queries.Queries;
+import net.botwithus.rs3.Client;
+import net.botwithus.rs3.interfaces.Interfaces;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
+import net.botwithus.rs3.minimenu.types.ObjectAction;
 import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
-import net.botwithus.rs3.script.Delay;
+import net.botwithus.rs3.script.Execution;
 
 import java.util.Locale;
 
 public class ArchMap {
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(667);
+        return Interfaces.isOpen(667);
     }
 
     public static void open() {
         var mapObj = SceneObjectQuery.newQuery().name("Dig sites map").results().nearest();
-        var player = Queries.self();
-        if (mapObj.isPresent() && player != null && player.getPosition().getZ() == mapObj.get().getPosition().getZ()) {
-            mapObj.get().doAction(ObjectAction.OBJECT1);
+        var player = Client.getLocalPlayer();
+        if (mapObj != null && player != null && player.getPosition() != null &&  mapObj.getPosition() != null
+                && player.getPosition().getZ() == mapObj.getPosition().getZ()) {
+            mapObj.interact(ObjectAction.OBJECT1);
         }
     }
 
@@ -28,9 +29,9 @@ public class ArchMap {
     }
 
     public static void chooseDigsite(int mapId) {
-        MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, mapId, 43712523);
-        Delay.delay(800);
-        MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, 43712535);
+        MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, mapId, 43712523);
+        Execution.delay(800);
+        MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 43712535);
     }
 }
 

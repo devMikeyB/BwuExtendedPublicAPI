@@ -1,12 +1,11 @@
 package net.botwithus.api.game.hud.traversal;
 
-
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
-import net.botwithus.rs3.queries.Queries;
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.util.Random;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.Client;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
+import net.botwithus.rs3.script.Execution;
+import net.botwithus.rs3.util.RandomGenerator;
+import net.botwithus.rs3.vars.VarManager;
 
 public enum Lodestone {
     AL_KHARID(71565323, 28),
@@ -47,17 +46,17 @@ public enum Lodestone {
 
     //TODO: Update to no longer use MiniMenu.doAction
         public boolean teleport() {
-        var player = Client.self();
+        var player = Client.getLocalPlayer();
         if (player == null) {
             return false;
         }
         var coordinate = player.getPosition();
         if (!LodestoneNetwork.isOpen()) {
             LodestoneNetwork.open();
-            Delay.delay(Random.nextInt(600, 900));
+            Execution.delay(RandomGenerator.nextInt(600, 900));
         }
-        if (MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, interactId)) {
-            Delay.delay(Random.nextInt(12000, 14000));
+        if (MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, interactId)) {
+            Execution.delay(RandomGenerator.nextInt(12000, 14000));
             return true;
         } else {
             return false;
@@ -65,11 +64,11 @@ public enum Lodestone {
 //        Time.waitUntil(() -> {
 //            var newCoordinate = ApexPlayer.getPosition();
 //            return coordinate != null && newCoordinate != null && !coordinate.equals(newCoordinate);
-//        }, Random.nextInt(12000, 14000), 1000);
+//        }, RandomGenerator.nextInt(12000, 14000), 1000);
     }
 
     public boolean isAvailable() {
-        var result = VariableManager.getVarbitValue(varbitId);
+        var result = VarManager.getVarbitValue(varbitId);
         switch (this) {
             case LUNAR_ISLE -> {
                 return result >= 100;

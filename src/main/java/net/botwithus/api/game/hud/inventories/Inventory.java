@@ -2,13 +2,13 @@ package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.internal.pooling.ItemPool;
 import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.item.Item;
+import net.botwithus.rs3.interfaces.item.Item;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
 import net.botwithus.rs3.types.InventoryType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -35,16 +35,16 @@ public class Inventory implements Iterable<Item> {
         this.optionMapper = optionMapper;
     }
 
-    public Optional<Item> getSlot(int slot) {
+    public Item getSlot(int slot) {
         return InventoryQuery.newQuery(id).slot(slot).results().first();
     }
 
-    public Optional<Item> getItem(String name) {
-        return InventoryQuery.newQuery(id).itemName(name).results().first();
+    public Item getItem(String name) {
+        return InventoryQuery.newQuery(id).name(name).results().first();
     }
 
-    public Optional<Item> getItem(Pattern pattern) {
-        return InventoryQuery.newQuery(id).itemName(pattern).results().first();
+    public Item getItem(Pattern pattern) {
+        return InventoryQuery.newQuery(id).name(pattern).results().first();
     }
 
     /**
@@ -72,7 +72,7 @@ public class Inventory implements Iterable<Item> {
         if (results.isEmpty()) {
             return true;
         }
-        return results.stream().allMatch(i -> i.getItemId() == -1);
+        return results.stream().allMatch(i -> i.getId() == -1);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Inventory implements Iterable<Item> {
     }
 
     public boolean contains(String... names) {
-        return !InventoryQuery.newQuery(id).itemName(names).results().isEmpty();
+        return !InventoryQuery.newQuery(id).name(names).results().isEmpty();
     }
 
     public boolean contains(int... ids) {
@@ -95,11 +95,11 @@ public class Inventory implements Iterable<Item> {
     }
 
     public boolean contains(Pattern itemNamePattern) {
-        return !InventoryQuery.newQuery(id).itemName(itemNamePattern).results().isEmpty();
+        return !InventoryQuery.newQuery(id).name(itemNamePattern).results().isEmpty();
     }
 
     public boolean containsAllOf(String... names) {
-        var items = InventoryQuery.newQuery(id).itemName(names).results();
+        var items = InventoryQuery.newQuery(id).name(names).results();
         var itemsSet = new HashSet<>(items.stream().map(Item::getName).distinct().toList());
         return !Arrays.stream(names).map(itemsSet::contains).toList().contains(false);
     }
@@ -107,13 +107,13 @@ public class Inventory implements Iterable<Item> {
     // TODO: Need to fix
     public boolean containsAllOf(int... ids) {
         var items = InventoryQuery.newQuery(id).itemId(ids).results();
-        var itemsSet = items.stream().map(Item::getItemId).collect(Collectors.toUnmodifiableSet());
+        var itemsSet = items.stream().map(Item::getId).collect(Collectors.toUnmodifiableSet());
 //        return !Arrays.stream(ids).map(i -> itemsSet.contains(i)).toList().contains(false);
         return false;
     }
 
     public boolean containsAllOf(Pattern... patterns) {
-        var items = InventoryQuery.newQuery(id).itemName(patterns).results();
+        var items = InventoryQuery.newQuery(id).name(patterns).results();
         var itemsList = items.stream().map(Item::getName).distinct().toList();
         return !itemsList.stream().map(
                 i -> !Arrays.stream(patterns).map(j -> j.matcher(i)).toList().contains(false)).toList().contains(false);
@@ -143,7 +143,7 @@ public class Inventory implements Iterable<Item> {
     }
 
     public int getCount(String... names) {
-        return InventoryQuery.newQuery(id).itemName(names).results().size();
+        return InventoryQuery.newQuery(id).name(names).results().size();
     }
 
     public int getCount(int... ids) {
@@ -151,22 +151,22 @@ public class Inventory implements Iterable<Item> {
     }
 
     public int getCount(Pattern pattern) {
-        return InventoryQuery.newQuery(id).itemName(pattern).results().size();
+        return InventoryQuery.newQuery(id).name(pattern).results().size();
     }
 
     public int getQuantity(String... names) {
-        var item = InventoryQuery.newQuery(id).itemName(names).results().first();
-        return item.map(Item::getAmount).orElse(-1);
+        var item = InventoryQuery.newQuery(id).name(names).results().first();
+        return item != null ? item.getStackSize() : -1;
     }
 
     public int getQuantity(int... ids) {
         var item = InventoryQuery.newQuery(id).itemId(ids).results().first();
-        return item.map(Item::getAmount).orElse(-1);
+        return item != null ? item.getStackSize() : -1;
     }
 
     public int getQuantity(Pattern itemNamePattern) {
-        var item = InventoryQuery.newQuery(id).itemName(itemNamePattern).results().first();
-        return item.map(Item::getAmount).orElse(-1);
+        var item = InventoryQuery.newQuery(id).name(itemNamePattern).results().first();
+        return item != null ? item.getStackSize() : -1;
     }
 
     /**
@@ -176,8 +176,8 @@ public class Inventory implements Iterable<Item> {
      * @param option The option to execute the action with.
      * @return True if the action was successful, false otherwise.
      */
-    public boolean doAction(int slot, String option) {
-        return doAction(slot, option, String::contentEquals);
+    public boolean interact(int slot, String option) {
+        return interact(slot, option, String::contentEquals);
     }
 
     /**
@@ -188,22 +188,21 @@ public class Inventory implements Iterable<Item> {
      * @param optionpred A predicate to test if the option is valid.
      * @return True if the action was successful, false otherwise.
      */
-    public boolean doAction(int slot, String option, BiFunction<String, CharSequence, Boolean> optionpred) {
-        Optional<Item> first = InventoryQuery.newQuery(id).slot(slot).results().first();
-        if (first.isEmpty()) {
+    public boolean interact(int slot, String option, BiFunction<String, CharSequence, Boolean> optionpred) {
+        Item item = InventoryQuery.newQuery(id).slot(slot).results().first();
+        if (item != null) {
             return false;
         }
-        Item item = first.get();
-        String[] options;
+        List<String> options;
         if (id == 94) {
-            options = item.getEquipmentOptions();
+            options = item.getConfigType().getEquipmentOptions();
         } else {
-            options = item.getComponentOptions();
+            options = item.getConfigType().getComponentOptions();
         }
-        for (int i = 0; i < options.length; i++) {
-            String s = options[i];
+        for (int i = 0; i < options.size(); i++) {
+            String s = options.get(i);
             if (optionpred.apply(s, option)) {
-                return doAction(slot, i);
+                return interact(slot, i);
             }
         }
         return false;
@@ -216,16 +215,16 @@ public class Inventory implements Iterable<Item> {
      * @param option The option to execute.
      * @return True if the action was successful, false otherwise.
      */
-    public boolean doAction(int slot, int option) {
+    public boolean interact(int slot, int option) {
         ResultSet<Item> results = InventoryQuery.newQuery(id).slot(slot).results();
-        Optional<Item> item = results.first();
-        if (item.isPresent()) {
-            Item i = item.get();
-            System.out.println("[Inventory#doAction(slot, option)]: " + i.getItemId());
+        Item item = results.first();
+        if (item != null) {
+            System.out.println("[Inventory#interact(slot, option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
-                    i.getItemId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results();
-            System.out.println("[Inventory#doAction(slot, option)]: QueryResults: " + queryResults.size());
-            return queryResults.first().map(c -> c.doAction(option)).orElse(false);
+                    item.getId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results();
+            System.out.println("[Inventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            var result = queryResults.first();
+            return result != null && result.interact(option);
         }
         return false;
     }
@@ -236,8 +235,8 @@ public class Inventory implements Iterable<Item> {
      * @param name The name of the action to execute.
      * @return true if the action was executed successfully, false otherwise.
      */
-    public boolean doAction(String name) {
-        return doAction(name, "", String::contentEquals, (s, c) -> true);
+    public boolean interact(String name) {
+        return interact(name, "", String::contentEquals, (s, c) -> true);
     }
 
     /**
@@ -247,14 +246,10 @@ public class Inventory implements Iterable<Item> {
      * @param option The option to perform the action with.
      * @return True if the action was successful, false otherwise.
      */
-    public boolean doAction(String name, int option) {
-        Optional<Item> first = InventoryQuery.newQuery(id).itemName(name).results().first();
-        if (first.isPresent()) {
-            Item item = first.get();
+    public boolean interact(String name, int option) {
+        Item item = InventoryQuery.newQuery(id).name(name).results().first();
 
-            return doAction(item.getSlot(), option);
-        }
-        return false;
+        return item != null && interact(item.getSlot(), option);
     }
 
     /**
@@ -264,33 +259,27 @@ public class Inventory implements Iterable<Item> {
      * @param option The option to use for the action.
      * @return True if the action was successful, false otherwise.
      */
-    public boolean doAction(String name, String option) {
-        return doAction(name, option, String::contentEquals, String::contentEquals);
+    public boolean interact(String name, String option) {
+        return interact(name, option, String::contentEquals, String::contentEquals);
     }
 
-    public boolean doAction(Pattern namePattern, String option) {
-        Optional<Item> first = InventoryQuery.newQuery(id).itemName(namePattern).results().first();
-        if (first.isPresent()) {
-            Item item = first.get();
-            return doAction(item.getSlot(), option);
-        }
-        return false;
+    public boolean interact(Pattern namePattern, String option) {
+        Item item = InventoryQuery.newQuery(id).name(namePattern).results().first();
+
+        return item != null && interact(item.getSlot(), option);
     }
 
-    public boolean doAction(Pattern namePattern, int option) {
-        Optional<Item> first = InventoryQuery.newQuery(id).itemName(namePattern).results().first();
-        if (first.isPresent()) {
-            Item item = first.get();
-            return doAction(item.getSlot(), option);
-        }
-        return false;
+    public boolean interact(Pattern namePattern, int option) {
+        Item item = InventoryQuery.newQuery(id).name(namePattern).results().first();
+
+        return item != null && interact(item.getSlot(), option);
     }
 
     public List<Item> getItems() {
         List<Item> items = new ArrayList<>();
         for (Item result : InventoryQuery.newQuery(id).results()) {
-            if (result.getItemId() > -1) {
-                items.add(ItemPool.createItem(this.id, result.getSlot(), result.getItemId(), result.getAmount()));
+            if (result.getId() > -1) {
+                items.add(ItemPool.createItem(this.id, result.getSlot(), result.getId(), result.getStackSize()));
             }
         }
         return items;
@@ -305,36 +294,26 @@ public class Inventory implements Iterable<Item> {
      * @param optionpred The predicate to use to compare the item option.
      * @return true if the action was successful, false otherwise.
      */
-    public boolean doAction(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
-        Optional<Item> item = InventoryQuery.newQuery(id).itemName(name, namepred).results().first();
-        if (item.isPresent()) {
-            Item i = item.get();
-            String[] options;
+    public boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
+        Item item = InventoryQuery.newQuery(id).name(name, namepred).results().first();
+        if (item != null) {
+            List<String> options;
             if (id == 94) {
-                options = i.getEquipmentOptions();
+                options = item.getConfigType().getEquipmentOptions();
             } else {
-                options = i.getComponentOptions();
+                options = item.getConfigType().getComponentOptions();
             }
-            for (int j = 0; j < options.length; j++) {
-                String s = options[j];
+            for (int j = 0; j < options.size(); j++) {
+                String s = options.get(j);
                 if (optionpred.apply(s, option)) {
                     int optionIndex = j;
-                    return ComponentQuery.newQuery(interfaceIndex).item(i.getItemId()).componentIndex(
-                            componentIndex).withOptionMapper(optionMapper).results().first().map(
-                            c -> c.doAction(optionIndex)).orElse(false);
+                    var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(
+                            componentIndex).withOptionMapper(optionMapper).results().first();
+                    return result != null && result.interact(optionIndex);
                 }
             }
         }
         return false;
-    }
-
-    /**
-     * Returns the number of slots in the type.
-     *
-     * @return the number of slots in the type
-     */
-    public int getSlotCount() {
-        return type.count;
     }
 
     /**
@@ -354,7 +333,7 @@ public class Inventory implements Iterable<Item> {
      * @return The value of the varbit.
      */
     public int getVarbitValue(int slot, int varbitId) {
-        return VariableManager.getInventoryVarbit(id, slot, varbitId);
+        return VarManager.getInventoryVarbit(id, slot, varbitId);
     }
 
     @Override

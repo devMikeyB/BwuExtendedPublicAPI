@@ -1,9 +1,8 @@
 package net.botwithus.api.game.hud.traversal;
 
-
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
+import net.botwithus.rs3.interfaces.Interfaces;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 
 public class ChooseDestination {
@@ -12,15 +11,16 @@ public class ChooseDestination {
 
 
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(720);
+        return Interfaces.isOpen(720);
     }
 
+    //TODO: Update and to no longer use MiniMenu.interact
     public static void selectOption(int index) {
-        MiniMenu.doAction(ComponentAction.DIALOGUE.getType(), 0, -1, INDEX_IDS[index]);
+        MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, INDEX_IDS[index]);
     }
 
     public static boolean canSelectOption(int index) {
         var component = ComponentQuery.newQuery(720).spriteId(CAN_SELECT_TEXTURE_ID).results().first();
-        return component.isPresent();
+        return component != null;
     }
 }

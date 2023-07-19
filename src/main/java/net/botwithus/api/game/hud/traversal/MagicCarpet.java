@@ -1,9 +1,9 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.menu.MiniMenu;
-import net.botwithus.rs3.menu.types.ComponentAction;
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.util.Random;
+import net.botwithus.rs3.minimenu.MiniMenu;
+import net.botwithus.rs3.minimenu.types.ComponentAction;
+import net.botwithus.rs3.script.Execution;
+import net.botwithus.rs3.util.RandomGenerator;
 
 public enum MagicCarpet {
     AL_KHARID(1928, 28), NORTH_POLLNIVNEACH(1928, 60), SOUTH_POLLNIVNEACH(1928, 68), NARDAH(1928, 68), BEDABIN_CAMP(
@@ -24,11 +24,11 @@ public enum MagicCarpet {
     public boolean teleport() {
         if (!MagicCarpetNetwork.isOpen()) {
             MagicCarpetNetwork.open();
-            Delay.delay(Random.nextInt(600, 900));
-//            Time.waitUntil(MagicCarpetNetwork::isOpen, Random.nextInt(600, 1200), Random.nextInt(300, 600));
+            Execution.delay(RandomGenerator.nextInt(600, 900));
+//            Time.waitUntil(MagicCarpetNetwork::isOpen, RandomGenerator.nextInt(600, 1200), RandomGenerator.nextInt(300, 600));
         }
         if (MagicCarpetNetwork.isOpen()) {
-            return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, getId());
+            return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, getId());
         }
         return false;
     }

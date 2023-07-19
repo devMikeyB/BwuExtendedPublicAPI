@@ -1,9 +1,11 @@
 package net.botwithus.api.game.hud;
 
+import net.botwithus.rs3.interfaces.Component;
+import net.botwithus.rs3.interfaces.Interfaces;
 import net.botwithus.rs3.minimenu.MiniMenu;
 import net.botwithus.rs3.minimenu.types.ComponentAction;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.script.Delay;
+import net.botwithus.rs3.script.Execution;
 
 public final class Hud {
     private Hud() {
@@ -17,9 +19,9 @@ public final class Hud {
     public static boolean logout() {
         Component logout = ComponentQuery.newQuery(1477).option("Logout").results().first();
         if (logout != null) {
-            logout.doAction("Logout");
-            if (Delay.delayUntil(5000, self -> Interface.isInterfaceOpen(1433))) {
-                return MiniMenu.doAction(ComponentAction.COMPONENT.getType(), 1, -1, (1433 << 16) | 71);
+            logout.interact("Logout");
+            if (Execution.delayUntil(5000, () -> Interfaces.isOpen(1433))) {
+                return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, (1433 << 16) | 71);
             }
         }
         return false;
@@ -31,8 +33,8 @@ public final class Hud {
      * @return true if the backpack was opened, false otherwise
      */
     public static boolean openBackpack() {
-        Component component = Interface.find(ComponentQuery.newQuery(1431).option("Open Backpack")).first();
-        return component != null && component.doAction("Open Backpack");
+        Component component = ComponentQuery.newQuery(1431).option("Open Backpack").results().first();
+        return component != null && component.interact("Open Backpack");
     }
 
     /**
@@ -41,8 +43,8 @@ public final class Hud {
      * @return true if the Skills tab was successfully opened, false otherwise
      */
     public static boolean openSkills() {
-        Component component = Interface.find(ComponentQuery.newQuery(1431).option("Open Skills")).first();
-        return component != null && component.doAction("Open Skills");
+        Component component = ComponentQuery.newQuery(1431).option("Open Skills").results().first();
+        return component != null && component.interact("Open Skills");
     }
 
     /**
@@ -51,7 +53,7 @@ public final class Hud {
      * @return true if the interface was opened, false otherwise
      */
     public static boolean openWornEquipment() {
-        Component component = Interface.find(ComponentQuery.newQuery(1431).option("Open Worn Equipment")).first();
-        return component != null && component.doAction("Open Worn Equipment");
+        Component component = ComponentQuery.newQuery(1431).option("Open Worn Equipment").results().first();
+        return component != null && component.interact("Open Worn Equipment");
     }
 }

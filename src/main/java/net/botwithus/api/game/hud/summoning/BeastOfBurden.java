@@ -1,6 +1,6 @@
 package net.botwithus.api.game.hud.summoning;
 
-import net.botwithus.rs3.item.Item;
+import net.botwithus.rs3.interfaces.item.Item;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
 
@@ -12,6 +12,6 @@ public class BeastOfBurden {
     }
 
     public static List<Item> getPopulatedItems() {
-        return getItems().stream().filter(i -> i.getItemId() > 0).toList();
+        return getItems().stream().filter(i -> i.getId() > 0).toList();
     }
 }

@@ -1,12 +1,12 @@
 package net.botwithus.api.game.skills.smithing;
 
+import com.sun.jdi.Value;
+import net.botwithus.rs3.types.EnumType;
 import net.botwithus.rs3.types.configs.ConfigManager;
 import net.botwithus.rs3.skills.Skills;
 import net.botwithus.rs3.types.ItemType;
 import net.botwithus.rs3.types.StructType;
-import net.botwithus.rs3.types.enums.EnumType;
-import net.botwithus.rs3.types.enums.Value;
-import net.botwithus.rs3.variables.VariableManager;
+import net.botwithus.rs3.vars.VarManager;
 
 /**
  * Exposes information related to the players inventory in regard to smithing
@@ -25,7 +25,7 @@ public final class Smithing {
      */
     public static int getUnfinishedItem(int slot) {
         EnumType etype = ConfigManager.getEnumType(15095);
-        int key = VariableManager.getInventoryVarbit(93, slot, 43222);
+        int key = VarManager.getInventoryVarbit(93, slot, 43222);
         Value value = etype.variants.get(key);
         return value.getIntegerValue();
     }
@@ -51,7 +51,7 @@ public final class Smithing {
      *   @return The heat of the unfinished item.
      */
     public static int getUnfinishedItemHeat(int slot) {
-        return VariableManager.getInventoryVarbit(93, slot, 43225);
+        return VarManager.getInventoryVarbit(93, slot, 43225);
     }
 
     /**
@@ -62,7 +62,7 @@ public final class Smithing {
      *   @return The progress of the unfinished item.
      */
     public static int getUnfinishedItemProgress(int slot) {
-        return VariableManager.getInventoryVarbit(93, slot, 43223);
+        return VarManager.getInventoryVarbit(93, slot, 43223);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class Smithing {
      */
     public static int getExperiencedLeft(int slot) {
         //cs2 divides so we also divide
-        return VariableManager.getInventoryVarbit(93, slot, 43224) / 10;
+        return VarManager.getInventoryVarbit(93, slot, 43224) / 10;
     }
 
     /**
@@ -86,7 +86,7 @@ public final class Smithing {
      */
     public static int getMaximumHeat(int slot) {
         EnumType etype = ConfigManager.getEnumType(15095);
-        int key = VariableManager.getInventoryVarbit(93, slot, 43222);
+        int key = VarManager.getInventoryVarbit(93, slot, 43222);
         Value value = etype.variants.get(key);
         if(value == null) {
             return -1;

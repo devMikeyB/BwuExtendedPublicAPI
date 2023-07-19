@@ -1,11 +1,11 @@
 package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.item.Item;
+import net.botwithus.rs3.interfaces.Interfaces;
+import net.botwithus.rs3.interfaces.item.Item;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.script.Delay;
-import net.botwithus.rs3.util.Random;
+import net.botwithus.rs3.script.Execution;
+import net.botwithus.rs3.util.RandomGenerator;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -227,8 +227,8 @@ public final class LootInventory {
             return true;
         }
         final var button = ComponentQuery.newQuery(LOOT_INTERFACE).option("Close").results().first();
-        return button.isPresent() && button.get().doAction("Close") && Delay.delayUntil(Random.nextInt(1500, 3000),
-                                                                                        (p) -> !LootInventory.isOpen());
+        return button != null && button.interact("Close") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000),
+                                                                                        () -> !LootInventory.isOpen());
     }
 
     public static Item getItemIn(final int index) {
@@ -246,15 +246,15 @@ public final class LootInventory {
 
     //TODO: need #getValueOfBit
 //    public static boolean isAreaLootEnabled() {
-//        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(1) == 1;
+//        return VarManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(1) == 1;
 //    }
 //
 //    public static boolean isEnabled() {
-//        return VariableManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(0) == 1;
+//        return VarManager.getVarPlayerValue(LOOT_VARP).getValueOfBit(0) == 1;
 //    }
 
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(LOOT_INTERFACE);
+        return Interfaces.isOpen(LOOT_INTERFACE);
     }
 
     public static boolean take(String... names) {
@@ -267,26 +267,26 @@ public final class LootInventory {
         if (item == null) {
             return false;
         }
-        int quantity = getQuantity(item.getItemId());
-        return LOOT_INVENTORY.doAction(item.getName()) && Delay.delayUntil(Random.nextInt(1500, 2500),
-                                                                           (p) -> quantity == getQuantity(
-                                                                                   item.getItemId()));
+        int quantity = getQuantity(item.getId());
+        return LOOT_INVENTORY.interact(item.getName()) && Execution.delayUntil(RandomGenerator.nextInt(1500, 2500),
+                                                                           () -> quantity == getQuantity(
+                                                                                   item.getId()));
     }
 
     public static boolean lootAll(boolean hotkeys) {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId()).text("Loot All",
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot All",
                                                                                                         String::contentEquals).results().first();
-        return component.isPresent() && component.get().doAction("Select") && Delay.delayUntil(
-                Random.nextInt(1500, 3000), (p) -> !LootInventory.isOpen());
+        return component != null && component.interact("Select") && Execution.delayUntil(
+                RandomGenerator.nextInt(1500, 3000), () -> !LootInventory.isOpen());
     }
 
     public static boolean lootCustom() {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.LABEL.getId()).text("Loot Custom",
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot Custom",
                                                                                                         String::contentEquals).results().first();
-        if (component.isPresent()) {
+        if (component != null) {
             int quantity = getQuantity();
-            return component.get().doAction("Select") && Delay.delayUntil(Random.nextInt(1500, 3000),
-                                                                          (p) -> getQuantity() == quantity);
+            return component.interact("Select") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000),
+                                                                          () -> getQuantity() == quantity);
         }
         return false;
     }

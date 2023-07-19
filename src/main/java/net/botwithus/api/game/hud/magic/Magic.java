@@ -1,9 +1,9 @@
 package net.botwithus.api.game.hud.magic;
 
+import com.sun.jdi.Value;
+import net.botwithus.rs3.types.EnumType;
 import net.botwithus.rs3.types.StructType;
 import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.types.enums.EnumType;
-import net.botwithus.rs3.types.enums.Value;
 
 import java.util.Objects;
 
@@ -22,9 +22,7 @@ public final class Magic {
         if (spellId < 1) {
             throw new IllegalArgumentException("Invalid Spell Id");
         }
-        EnumType spells = ConfigManager.getEnumType(6740);
-        Value spellStruct = spells.variants.get(spellId);
-        StructType spellInfo = ConfigManager.getStructType(spellStruct.getIntegerValue());
+        StructType spellInfo = ConfigManager.getStructType(spellId);
         return new Spell(spellInfo);
     }
 
@@ -38,14 +36,16 @@ public final class Magic {
     public static Spell getSpellByName(String name) {
         Objects.requireNonNull(name);
         EnumType spells = ConfigManager.getEnumType(6740);
-        for (Value value : spells.variants.values()) {
-            int structId = value.getIntegerValue();
-            StructType spellInfo = ConfigManager.getStructType(structId);
-            if (spellInfo.getString(2974).equalsIgnoreCase(name)) {
-                return new Spell(spellInfo);
-            }
+        var varValue = spells.outputs().stream().filter(i -> i.getStringValue().equals(name)).findFirst();
+        if (varValue.isEmpty()) {
+            throw new IllegalArgumentException("Unknown spell " + name);
         }
-        throw new IllegalArgumentException("Unknown spell " + name);
+
+        StructType spellInfo = ConfigManager.getStructType(varValue.get().getIntegerValue());
+        if (spellInfo.getString(2974).equalsIgnoreCase(name)) {
+            return new Spell(spellInfo);
+        }
+        return null;
     }
 
 }
