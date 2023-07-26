@@ -1,11 +1,11 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.Client;
-import net.botwithus.rs3.minimenu.MiniMenu;
-import net.botwithus.rs3.minimenu.types.ComponentAction;
+import net.botwithus.rs3.game.Client;
+import net.botwithus.rs3.game.minimenu.MiniMenu;
+import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;
-import net.botwithus.rs3.vars.VarManager;
+import net.botwithus.rs3.game.vars.VarManager;
 
 public enum Lodestone {
     AL_KHARID(71565323, 28),
@@ -50,7 +50,7 @@ public enum Lodestone {
         if (player == null) {
             return false;
         }
-        var coordinate = player.getPosition();
+        var coordinate = player.getCoordinate();
         if (!LodestoneNetwork.isOpen()) {
             LodestoneNetwork.open();
             Execution.delay(RandomGenerator.nextInt(600, 900));

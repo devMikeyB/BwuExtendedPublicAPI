@@ -18,7 +18,7 @@ tasks.withType<JavaCompile> {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("net.botwithus.rs3:api:1.0.1-SNAPSHOT")
+    implementation("net.botwithus.rs3:api:1.0.0-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }

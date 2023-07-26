@@ -1,12 +1,14 @@
 package net.botwithus.api.game.hud.summoning;
 
-import net.botwithus.rs3.entities.Onymous;
-import net.botwithus.rs3.minimenu.MiniMenu;
-import net.botwithus.rs3.minimenu.types.ComponentAction;
-import net.botwithus.rs3.skills.Skills;
-import net.botwithus.rs3.vars.VarManager;
+import net.botwithus.rs3.game.annotations.Onymous;
+import net.botwithus.rs3.game.js5.types.vars.VarDomainType;
+import net.botwithus.rs3.game.minimenu.MiniMenu;
+import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
+import net.botwithus.rs3.game.skills.Skills;
+import net.botwithus.rs3.game.vars.VarManager;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,7 +53,7 @@ public class Summoning {
      * Gets the amount of special move points available
      */
     public static int getSpecialMovePoints() {
-        return VarManager.getVarPlayerValue(VARP_SPECIAL_MOVE_POINTS);
+        return VarManager.getVarValue(VarDomainType.PLAYER, VARP_SPECIAL_MOVE_POINTS);
     }
 
     public static Set<Familiar> getBeastOfBurdens() {

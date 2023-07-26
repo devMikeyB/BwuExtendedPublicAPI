@@ -1,7 +1,7 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
-import net.botwithus.rs3.interfaces.item.Item;
+import net.botwithus.rs3.queries.builders.items.ItemQuery;
+import net.botwithus.rs3.game.Item;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,12 +41,12 @@ public final class Backpack {
     }
 
     /**
-     * Checks if the given {@link InventoryQuery} is contained in the {@link #BACKPACK}.
+     * Checks if the given {@link ItemQuery} is contained in the {@link #BACKPACK}.
      *
-     * @param query The {@link InventoryQuery} to check for.
-     * @return {@code true} if the {@link InventoryQuery} is contained in the {@link #BACKPACK}, {@code false} otherwise.
+     * @param query The {@link ItemQuery} to check for.
+     * @return {@code true} if the {@link ItemQuery} is contained in the {@link #BACKPACK}, {@code false} otherwise.
      */
-    public static boolean contains(InventoryQuery query) {
+    public static boolean contains(ItemQuery query) {
         return BACKPACK.contains(query);
     }
 
@@ -204,6 +204,6 @@ public final class Backpack {
     }
 
     public static Item getSelectedItem() {
-        return InventoryQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
+        return ItemQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
     }
 }

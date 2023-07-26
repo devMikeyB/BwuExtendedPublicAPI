@@ -1,7 +1,7 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.interfaces.Interfaces;
-import net.botwithus.rs3.queries.builders.npc.NpcQuery;
+import net.botwithus.rs3.game.hud.interfaces.Interfaces;
+import net.botwithus.rs3.queries.builders.characters.NpcQuery;
 
 public class MagicCarpetNetwork {
     /**

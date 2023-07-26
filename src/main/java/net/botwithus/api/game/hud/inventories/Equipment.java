@@ -1,8 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.item.Item;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
-import net.botwithus.rs3.vars.VarManager;
+import net.botwithus.rs3.game.Item;
+import net.botwithus.rs3.queries.builders.items.ItemQuery;
+import net.botwithus.rs3.game.vars.VarManager;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -59,7 +59,7 @@ public final class Equipment {
      * @return true if the item is present in the inventory, false otherwise.
      */
     public static boolean contains(String name) {
-        return EQUIPMENT.contains(InventoryQuery.newQuery().name(name));
+        return EQUIPMENT.contains(ItemQuery.newQuery().name(name));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class Equipment {
      * @return True if an item with a matching name is present in the inventory, false otherwise.
      */
     public static boolean contains(Pattern pattern) {
-        return EQUIPMENT.contains(InventoryQuery.newQuery().name(pattern));
+        return EQUIPMENT.contains(ItemQuery.newQuery().name(pattern));
     }
 
     /**
@@ -101,6 +101,7 @@ public final class Equipment {
      * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
-        return VarManager.getInventoryVarbit(94, slot, varbitId);
+        var item = ItemQuery.newQuery(94).slots(slot).results().first();
+        return item != null ? item.getVarbitValue(varbitId) : Integer.MIN_VALUE;
     }
 }

@@ -1,8 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.Interfaces;
+import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
+import net.botwithus.rs3.queries.builders.items.ItemQuery;
 import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
 import net.botwithus.rs3.util.Regex;
 
@@ -65,13 +65,13 @@ public final class DepositBox {
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
-        var items = InventoryQuery.newQuery(93).option("Deposit").results().stream().filter(
+        var items = ItemQuery.newQuery(93).option("Deposit").results().stream().filter(
                 i -> !idSet.contains(i.getId()));
         return !items.map(i -> BACKPACK.interact(i.getSlot(), 1)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
-        var items = InventoryQuery.newQuery(93).option("Deposit").results().stream().filter(
+        var items = ItemQuery.newQuery(93).option("Deposit").results().stream().filter(
                 i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
         return !items.map(i -> BACKPACK.interact(i.getSlot(), 1)).toList().contains(false);
     }

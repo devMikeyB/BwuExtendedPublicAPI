@@ -1,8 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.interfaces.Interfaces;
-import net.botwithus.rs3.interfaces.item.Item;
+import net.botwithus.rs3.game.hud.interfaces.Component;
+import net.botwithus.rs3.game.hud.interfaces.Interfaces;
+import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;

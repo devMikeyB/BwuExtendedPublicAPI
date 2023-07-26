@@ -1,10 +1,10 @@
 package net.botwithus.api.game.world;
 
-import net.botwithus.rs3.Client;
+import net.botwithus.rs3.game.Client;
 import net.botwithus.rs3.util.RandomGenerator;
-import net.botwithus.rs3.world.Area;
-import net.botwithus.rs3.world.Coordinate;
-import net.botwithus.rs3.world.Travel;
+import net.botwithus.rs3.game.Area;
+import net.botwithus.rs3.game.Coordinate;
+import net.botwithus.rs3.game.Travel;
 
 public class Traverse {
     public static boolean to(Coordinate coordinate) {

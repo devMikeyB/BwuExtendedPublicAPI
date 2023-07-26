@@ -1,14 +1,14 @@
 package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.internal.pooling.ItemPool;
-import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.interfaces.item.Item;
+import net.botwithus.rs3.game.hud.interfaces.Component;
+import net.botwithus.rs3.game.Item;
+import net.botwithus.rs3.game.js5.types.InventoryType;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
-import net.botwithus.rs3.types.InventoryType;
-import net.botwithus.rs3.types.configs.ConfigManager;
-import net.botwithus.rs3.vars.VarManager;
+import net.botwithus.rs3.game.js5.types.configs.ConfigManager;
+import net.botwithus.rs3.game.vars.VarManager;
+import net.botwithus.rs3.queries.builders.items.ItemQuery;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -36,15 +36,15 @@ public class Inventory implements Iterable<Item> {
     }
 
     public Item getSlot(int slot) {
-        return InventoryQuery.newQuery(id).slot(slot).results().first();
+        return ItemQuery.newQuery(id).slots(slot).results().first();
     }
 
     public Item getItem(String name) {
-        return InventoryQuery.newQuery(id).name(name).results().first();
+        return ItemQuery.newQuery(id).name(name).results().first();
     }
 
     public Item getItem(Pattern pattern) {
-        return InventoryQuery.newQuery(id).name(pattern).results().first();
+        return ItemQuery.newQuery(id).name(pattern).results().first();
     }
 
     /**
@@ -54,11 +54,11 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean isFull() {
         // Server does not send inventory items on login when empty, which is why this check is necessary.
-        ResultSet<Item> results = InventoryQuery.newQuery(id).results();
+        ResultSet<Item> results = ItemQuery.newQuery(id).results();
         if (results.isEmpty()) {
             return false;
         }
-        return InventoryQuery.newQuery(id).itemId(-1).results().isEmpty();
+        return ItemQuery.newQuery(id).ids(-1).results().isEmpty();
     }
 
     /**
@@ -68,7 +68,7 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean isEmpty() {
         // Server does not send inventory items on login when empty, which is why this check is necessary.
-        ResultSet<Item> results = InventoryQuery.newQuery(id).results();
+        ResultSet<Item> results = ItemQuery.newQuery(id).results();
         if (results.isEmpty()) {
             return true;
         }
@@ -81,39 +81,39 @@ public class Inventory implements Iterable<Item> {
      * @param query The query to check for
      * @return true if the inventory contains the query, false otherwise
      */
-    public boolean contains(InventoryQuery query) {
-        query.setIds(id);
+    public boolean contains(ItemQuery query) {
+        query.ids(id);
         return !query.results().isEmpty();
     }
 
     public boolean contains(String... names) {
-        return !InventoryQuery.newQuery(id).name(names).results().isEmpty();
+        return !ItemQuery.newQuery(id).name(names).results().isEmpty();
     }
 
     public boolean contains(int... ids) {
-        return !InventoryQuery.newQuery(id).itemId(ids).results().isEmpty();
+        return !ItemQuery.newQuery(id).ids(ids).results().isEmpty();
     }
 
     public boolean contains(Pattern itemNamePattern) {
-        return !InventoryQuery.newQuery(id).name(itemNamePattern).results().isEmpty();
+        return !ItemQuery.newQuery(id).name(itemNamePattern).results().isEmpty();
     }
 
     public boolean containsAllOf(String... names) {
-        var items = InventoryQuery.newQuery(id).name(names).results();
+        var items = ItemQuery.newQuery(id).name(names).results();
         var itemsSet = new HashSet<>(items.stream().map(Item::getName).distinct().toList());
         return !Arrays.stream(names).map(itemsSet::contains).toList().contains(false);
     }
 
     // TODO: Need to fix
     public boolean containsAllOf(int... ids) {
-        var items = InventoryQuery.newQuery(id).itemId(ids).results();
+        var items = ItemQuery.newQuery(id).ids(ids).results();
         var itemsSet = items.stream().map(Item::getId).collect(Collectors.toUnmodifiableSet());
 //        return !Arrays.stream(ids).map(i -> itemsSet.contains(i)).toList().contains(false);
         return false;
     }
 
     public boolean containsAllOf(Pattern... patterns) {
-        var items = InventoryQuery.newQuery(id).name(patterns).results();
+        var items = ItemQuery.newQuery(id).name(patterns).results();
         var itemsList = items.stream().map(Item::getName).distinct().toList();
         return !itemsList.stream().map(
                 i -> !Arrays.stream(patterns).map(j -> j.matcher(i)).toList().contains(false)).toList().contains(false);
@@ -139,33 +139,33 @@ public class Inventory implements Iterable<Item> {
     }
 
     public int getCount() {
-        return InventoryQuery.newQuery(id).results().size();
+        return ItemQuery.newQuery(id).results().size();
     }
 
     public int getCount(String... names) {
-        return InventoryQuery.newQuery(id).name(names).results().size();
+        return ItemQuery.newQuery(id).name(names).results().size();
     }
 
     public int getCount(int... ids) {
-        return InventoryQuery.newQuery(id).itemId(ids).results().size();
+        return ItemQuery.newQuery(id).ids(ids).results().size();
     }
 
     public int getCount(Pattern pattern) {
-        return InventoryQuery.newQuery(id).name(pattern).results().size();
+        return ItemQuery.newQuery(id).name(pattern).results().size();
     }
 
     public int getQuantity(String... names) {
-        var item = InventoryQuery.newQuery(id).name(names).results().first();
+        var item = ItemQuery.newQuery(id).name(names).results().first();
         return item != null ? item.getStackSize() : -1;
     }
 
     public int getQuantity(int... ids) {
-        var item = InventoryQuery.newQuery(id).itemId(ids).results().first();
+        var item = ItemQuery.newQuery(id).ids(ids).results().first();
         return item != null ? item.getStackSize() : -1;
     }
 
     public int getQuantity(Pattern itemNamePattern) {
-        var item = InventoryQuery.newQuery(id).name(itemNamePattern).results().first();
+        var item = ItemQuery.newQuery(id).name(itemNamePattern).results().first();
         return item != null ? item.getStackSize() : -1;
     }
 
@@ -189,15 +189,15 @@ public class Inventory implements Iterable<Item> {
      * @return True if the action was successful, false otherwise.
      */
     public boolean interact(int slot, String option, BiFunction<String, CharSequence, Boolean> optionpred) {
-        Item item = InventoryQuery.newQuery(id).slot(slot).results().first();
-        if (item != null) {
+        Item item = ItemQuery.newQuery(id).slots(slot).results().first();
+        if (item == null) {
             return false;
         }
         List<String> options;
         if (id == 94) {
             options = item.getConfigType().getEquipmentOptions();
         } else {
-            options = item.getConfigType().getComponentOptions();
+            options = item.getConfigType().getBankOptions();
         }
         for (int i = 0; i < options.size(); i++) {
             String s = options.get(i);
@@ -216,7 +216,7 @@ public class Inventory implements Iterable<Item> {
      * @return True if the action was successful, false otherwise.
      */
     public boolean interact(int slot, int option) {
-        ResultSet<Item> results = InventoryQuery.newQuery(id).slot(slot).results();
+        ResultSet<Item> results = ItemQuery.newQuery(id).slots(slot).results();
         Item item = results.first();
         if (item != null) {
             System.out.println("[Inventory#interact(slot, option)]: " + item.getId());
@@ -247,7 +247,7 @@ public class Inventory implements Iterable<Item> {
      * @return True if the action was successful, false otherwise.
      */
     public boolean interact(String name, int option) {
-        Item item = InventoryQuery.newQuery(id).name(name).results().first();
+        Item item = ItemQuery.newQuery(id).name(name).results().first();
 
         return item != null && interact(item.getSlot(), option);
     }
@@ -264,20 +264,20 @@ public class Inventory implements Iterable<Item> {
     }
 
     public boolean interact(Pattern namePattern, String option) {
-        Item item = InventoryQuery.newQuery(id).name(namePattern).results().first();
+        Item item = ItemQuery.newQuery(id).name(namePattern).results().first();
 
         return item != null && interact(item.getSlot(), option);
     }
 
     public boolean interact(Pattern namePattern, int option) {
-        Item item = InventoryQuery.newQuery(id).name(namePattern).results().first();
+        Item item = ItemQuery.newQuery(id).name(namePattern).results().first();
 
         return item != null && interact(item.getSlot(), option);
     }
 
     public List<Item> getItems() {
         List<Item> items = new ArrayList<>();
-        for (Item result : InventoryQuery.newQuery(id).results()) {
+        for (Item result : ItemQuery.newQuery(id).results()) {
             if (result.getId() > -1) {
                 items.add(ItemPool.createItem(this.id, result.getSlot(), result.getId(), result.getStackSize()));
             }
@@ -295,13 +295,13 @@ public class Inventory implements Iterable<Item> {
      * @return true if the action was successful, false otherwise.
      */
     public boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
-        Item item = InventoryQuery.newQuery(id).name(name, namepred).results().first();
+        Item item = ItemQuery.newQuery(id).name(name, namepred).results().first();
         if (item != null) {
             List<String> options;
             if (id == 94) {
                 options = item.getConfigType().getEquipmentOptions();
             } else {
-                options = item.getConfigType().getComponentOptions();
+                options = item.getConfigType().getBankOptions();
             }
             for (int j = 0; j < options.size(); j++) {
                 String s = options.get(j);
@@ -333,7 +333,8 @@ public class Inventory implements Iterable<Item> {
      * @return The value of the varbit.
      */
     public int getVarbitValue(int slot, int varbitId) {
-        return VarManager.getInventoryVarbit(id, slot, varbitId);
+        var item = ItemQuery.newQuery(id).slots(slot).results().first();
+        return item != null ? item.getVarbitValue(varbitId) : Integer.MIN_VALUE;
     }
 
     @Override

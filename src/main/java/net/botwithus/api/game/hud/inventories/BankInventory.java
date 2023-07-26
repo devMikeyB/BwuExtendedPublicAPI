@@ -1,10 +1,10 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.interfaces.item.Item;
+import net.botwithus.rs3.game.hud.interfaces.Component;
+import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.queries.ResultSet;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
+import net.botwithus.rs3.queries.builders.items.ItemQuery;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -26,7 +26,7 @@ public class BankInventory extends Inventory {
 
     @Override
     public boolean interact(int slot, int option) {
-        ResultSet<Item> results = InventoryQuery.newQuery(getId()).slot(slot).results();
+        ResultSet<Item> results = ItemQuery.newQuery(getId()).slots(slot).results();
         Item item = results.first();
         if (item != null) {
             System.out.println("[Inventory#interact(slot, option)]: " + item.getId());

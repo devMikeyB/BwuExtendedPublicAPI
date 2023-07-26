@@ -1,7 +1,7 @@
 package net.botwithus.api.game.hud.summoning;
 
 import net.botwithus.api.game.hud.Dialog;
-import net.botwithus.rs3.entities.Onymous;
+import net.botwithus.rs3.game.annotations.Onymous;
 import net.botwithus.rs3.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.script.Execution;
 
