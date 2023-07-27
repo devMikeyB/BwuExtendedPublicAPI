@@ -1,7 +1,7 @@
 package net.botwithus.api.game.net;
 
 import com.google.gson.*;
-import net.botwithus.rs3.util.collection.PairList;
+import net.botwithus.api.util.collection.PairList;
 
 import java.io.BufferedReader;
 import java.io.IOException;

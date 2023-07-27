@@ -1,10 +1,9 @@
 package net.botwithus.api.util.time;
 
-import net.botwithus.rs3.util.time.Stopwatch;
-import net.botwithus.rs3.util.time.enums.DurationStringFormat;
+import net.botwithus.api.util.time.enums.DurationStringFormat;
 
 public class Timer {
-    private final net.botwithus.rs3.util.time.Stopwatch stopWatch = new Stopwatch();
+    private final Stopwatch stopWatch = new Stopwatch();
     private long minTime, maxTime;
     private boolean hasStarted = false, forceExpired = false;
     private long timerDuration;

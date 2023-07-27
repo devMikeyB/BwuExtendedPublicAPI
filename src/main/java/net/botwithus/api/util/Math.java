@@ -1,7 +1,7 @@
 package net.botwithus.api.util;
 
 
-import net.botwithus.rs3.util.time.Stopwatch;
+import net.botwithus.api.util.time.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 

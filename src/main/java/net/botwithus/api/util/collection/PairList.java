@@ -1,10 +1,9 @@
 package net.botwithus.api.util.collection;
 
-import net.botwithus.rs3.util.collection.Pair;
 
 import java.util.*;
 
-public class PairList<L, R> extends ArrayList<net.botwithus.rs3.util.collection.Pair<L, R>> {
+public class PairList<L, R> extends ArrayList<Pair<L, R>> {
     public PairList() {
         super();
     }
@@ -13,15 +12,15 @@ public class PairList<L, R> extends ArrayList<net.botwithus.rs3.util.collection.
         super(initialCapacity);
     }
 
-    public PairList(net.botwithus.rs3.util.collection.Pair<L, R> var1) {
+    public PairList(Pair<L, R> var1) {
         this.add(var1);
     }
 
-    public PairList(net.botwithus.rs3.util.collection.Pair<L, R>[] pairs) {
+    public PairList(Pair<L, R>[] pairs) {
         super(Arrays.asList(pairs));
     }
 
-    public PairList(Collection<net.botwithus.rs3.util.collection.Pair<L, R>> pairs) {
+    public PairList(Collection<Pair<L, R>> pairs) {
         super(pairs);
     }
 
@@ -33,16 +32,16 @@ public class PairList<L, R> extends ArrayList<net.botwithus.rs3.util.collection.
     }
 
     public void add(L left, R right) {
-        this.add(new net.botwithus.rs3.util.collection.Pair<>(left, right));
+        this.add(new Pair<>(left, right));
     }
 
     public boolean contains(L left, R right) {
-        return this.contains(new net.botwithus.rs3.util.collection.Pair<>(left, right));
+        return this.contains(new Pair<>(left, right));
     }
 
     public List<R> getRights(L left) {
         List<R> list = new ArrayList<>(this.size());
-        for (net.botwithus.rs3.util.collection.Pair<L, R> pair : this) {
+        for (Pair<L, R> pair : this) {
             if (pair.getLeft().equals(left)) {
                 list.add(pair.getRight());
             }
@@ -52,7 +51,7 @@ public class PairList<L, R> extends ArrayList<net.botwithus.rs3.util.collection.
 
     public List<R> getRights() {
         List<R> list = new ArrayList<>(this.size());
-        for (net.botwithus.rs3.util.collection.Pair<L, R> pair : this) {
+        for (Pair<L, R> pair : this) {
             list.add(pair.getRight());
         }
         return list;
@@ -60,7 +59,7 @@ public class PairList<L, R> extends ArrayList<net.botwithus.rs3.util.collection.
 
     public List<L> getLefts(R right) {
         List<L> list = new ArrayList<>(this.size());
-        for (net.botwithus.rs3.util.collection.Pair<L, R> pair : this) {
+        for (Pair<L, R> pair : this) {
             if (pair.getRight().equals(right)) {
                 list.add(pair.getLeft());
             }
