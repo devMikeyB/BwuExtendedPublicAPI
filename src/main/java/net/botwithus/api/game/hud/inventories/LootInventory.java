@@ -3,13 +3,14 @@ package net.botwithus.api.game.hud.inventories;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.Item;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -227,8 +228,7 @@ public final class LootInventory {
             return true;
         }
         final var button = ComponentQuery.newQuery(LOOT_INTERFACE).option("Close").results().first();
-        return button != null && button.interact("Close") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000),
-                                                                                        () -> !LootInventory.isOpen());
+        return button != null && button.interact("Close") && Execution.delayUntil(RandomGenerator.nextInt(600, 1800), () -> !LootInventory.isOpen());
     }
 
     public static Item getItemIn(final int index) {
@@ -240,8 +240,8 @@ public final class LootInventory {
     }
 
     public static List<Item> getItems(String... names) {
-        var set = new HashSet<>(Arrays.stream(names).toList());
-        return getItems().stream().filter(i -> set.contains(names)).toList();
+        return getItems().stream().filter(item -> Arrays.stream(names)
+                .anyMatch(name -> Objects.equals(name, item.getName()))).toList();
     }
 
     //TODO: need #getValueOfBit
@@ -268,25 +268,19 @@ public final class LootInventory {
             return false;
         }
         int quantity = getQuantity(item.getId());
-        return LOOT_INVENTORY.interact(item.getName()) && Execution.delayUntil(RandomGenerator.nextInt(1500, 2500),
-                                                                           () -> quantity == getQuantity(
-                                                                                   item.getId()));
+        return LOOT_INVENTORY.interact(item.getName()) && Execution.delayUntil(RandomGenerator.nextInt(1500, 2500), () -> quantity == getQuantity(item.getId()));
     }
 
     public static boolean lootAll(boolean hotkeys) {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot All",
-                                                                                                        String::contentEquals).results().first();
-        return component != null && component.interact("Select") && Execution.delayUntil(
-                RandomGenerator.nextInt(1500, 3000), () -> !LootInventory.isOpen());
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot All", String::contentEquals).results().first();
+        return component != null && component.interact("Select") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000), () -> !LootInventory.isOpen());
     }
 
     public static boolean lootCustom() {
-        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot Custom",
-                                                                                                        String::contentEquals).results().first();
+        var component = ComponentQuery.newQuery(LOOT_INTERFACE).type(Component.Type.TEXT.getOpcode()).text("Loot Custom", String::contentEquals).results().first();
         if (component != null) {
             int quantity = getQuantity();
-            return component.interact("Select") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000),
-                                                                          () -> getQuantity() == quantity);
+            return component.interact("Select") && Execution.delayUntil(RandomGenerator.nextInt(1500, 3000), () -> getQuantity() == quantity);
         }
         return false;
     }

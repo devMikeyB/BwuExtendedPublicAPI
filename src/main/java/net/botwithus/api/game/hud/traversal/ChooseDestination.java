@@ -3,7 +3,7 @@ package net.botwithus.api.game.hud.traversal;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 
 public class ChooseDestination {
     private static final int[] INDEX_IDS = {47185921, 47185940, 47185943, 47185946, 47185949, 47185952, 47185955, 47185958}, OPTIONS_INDICES = {14, 21, 24, 27, 30, 33, 36, 39, 42, 45};

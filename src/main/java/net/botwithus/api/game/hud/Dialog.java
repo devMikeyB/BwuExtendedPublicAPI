@@ -4,19 +4,20 @@ import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Dialog {
-
     public static boolean isOpen() {
-        return Interfaces.isOpen(1184) || Interfaces.isOpen(1188) || Interfaces.isOpen(
-                1189) || Interfaces.isOpen(1191);
+        return Interfaces.areAnyOpen(1184, 1188, 1189, 1191);
     }
 
-    public static boolean doContinue() {
+    public static boolean select() {
         if (Interfaces.isOpen(1184)) {
             return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, 77594639);
         } else if (Interfaces.isOpen(1189)) {
@@ -27,12 +28,12 @@ public class Dialog {
         return false;
     }
 
+    @NotNull
     public static List<String> getOptions() {
         if (Interfaces.isOpen(1188)) {
-            return ComponentQuery.newQuery(1188).componentIndex(8, 13, 18, 23, 28).type(4).results().stream().map(
-                    Component::getText).toList();
+            return ComponentQuery.newQuery(1188).componentIndex(8, 13, 18, 23, 28).type(4).results().stream().map(Component::getText).toList();
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     public static boolean hasOption(String string) {
@@ -52,25 +53,29 @@ public class Dialog {
      *
      * @return The text from the component, or an empty string if the interface is not open.
      */
+    @Nullable
     public static String getText() {
         if (isOpen()) {
             var result = ComponentQuery.newQuery(1184).componentIndex(10).results().first();
-            return result != null ? result.getText() : "";
+            if (result != null) {
+                return result.getText();
+            }
         }
-        return "";
+        return null;
     }
 
+    @Nullable
     public static String getTitle() {
         Component result = null;
         if (Interfaces.isOpen(1184)) {
             result = ComponentQuery.newQuery(1184).type(4).results().first();
         } else if (Interfaces.isOpen(1188)) {
-            result =  ComponentQuery.newQuery(1188).type(4).results().first();
+            result = ComponentQuery.newQuery(1188).type(4).results().first();
         } else if (Interfaces.isOpen(1189)) {
-            result =  ComponentQuery.newQuery(1189).type(4).results().first();
+            result = ComponentQuery.newQuery(1189).type(4).results().first();
         } else if (Interfaces.isOpen(1191)) {
-            result =  ComponentQuery.newQuery(1191).type(4).results().first();
+            result = ComponentQuery.newQuery(1191).type(4).results().first();
         }
-        return result != null ? result.getText() : "";
+        return result != null ? result.getText() : null;
     }
 }

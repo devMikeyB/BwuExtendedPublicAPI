@@ -1,7 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.queries.builders.items.ItemQuery;
 import net.botwithus.rs3.game.Item;
+import net.botwithus.rs3.game.queries.builders.ItemQuery;
+import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
  * @author David
  */
 public final class Backpack {
-
     private static final Pattern SELECTED_ITEM_PATTERN = Pattern.compile("^Use\\s.*?(\\s->\\s).*$");
 
     static final Inventory BACKPACK = new Inventory(93, 1473, 5, i -> i + 1);
@@ -38,16 +38,6 @@ public final class Backpack {
      */
     public static boolean isEmpty() {
         return BACKPACK.isEmpty();
-    }
-
-    /**
-     * Checks if the given {@link ItemQuery} is contained in the {@link #BACKPACK}.
-     *
-     * @param query The {@link ItemQuery} to check for.
-     * @return {@code true} if the {@link ItemQuery} is contained in the {@link #BACKPACK}, {@code false} otherwise.
-     */
-    public static boolean contains(ItemQuery query) {
-        return BACKPACK.contains(query);
     }
 
     public static boolean contains(String... names) {
@@ -204,6 +194,6 @@ public final class Backpack {
     }
 
     public static Item getSelectedItem() {
-        return ItemQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
+        return InventoryItemQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
     }
 }

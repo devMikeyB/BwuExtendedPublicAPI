@@ -5,10 +5,10 @@ import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.queries.builders.items.ItemQuery;
-import net.botwithus.rs3.queries.builders.characters.NpcQuery;
-import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
+import net.botwithus.rs3.game.queries.builders.characters.NpcQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
+import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;
 import net.botwithus.rs3.game.vars.VarManager;
@@ -51,8 +51,8 @@ public class Bank {
         }
         if (obj != null && useObj) {
             var actions = obj.getOptions();
-            if (actions.size() > 0) {
-                var action = actions.stream().filter(i -> i != null && i.length() > 0).findFirst();
+            if (!actions.isEmpty()) {
+                var action = actions.stream().filter(i -> i != null && !i.isEmpty()).findFirst();
                 return action.isPresent() && obj.interact(action.get());
             } else {
                 System.out.println("[Bank] No options on object");
@@ -95,7 +95,7 @@ public class Bank {
      * @return returns an array containing all items in the bank.
      */
     public static Item[] getItems() {
-        return ItemQuery.newQuery(95).results().stream().filter(i -> i.getId() != -1).toArray(Item[]::new);
+        return InventoryItemQuery.newQuery(95).results().stream().filter(i -> i.getId() != -1).toArray(Item[]::new);
     }
 
 
@@ -105,7 +105,7 @@ public class Bank {
      * @param query the predicate specifying the item to count.
      * @return returns an integer representing the count of the item
      */
-    public static int count(ItemQuery query) {
+    public static int count(InventoryItemQuery query) {
         return query.results().stream().mapToInt(Item::getStackSize).sum();
     }
 
@@ -115,7 +115,7 @@ public class Bank {
      * @param query the predicate specifying the item to count.
      * @return returns the item, or null if not found.
      */
-    public static Item first(ItemQuery query) {
+    public static Item first(InventoryItemQuery query) {
         return query.results().first();
     }
 
@@ -134,16 +134,16 @@ public class Bank {
      * @param query the predicate specifying the item to count.
      * @return returns the item, or null if not found.
      */
-    public static boolean contains(ItemQuery query) {
+    public static boolean contains(InventoryItemQuery query) {
         return count(query) > 0;
     }
 
     public static boolean contains(String... itemNames) {
-        return !ItemQuery.newQuery(95).name(itemNames).results().isEmpty();
+        return !InventoryItemQuery.newQuery(95).name(itemNames).results().isEmpty();
     }
 
     public static boolean contains(Pattern itemNamePattern) {
-        return !ItemQuery.newQuery(95).name(itemNamePattern).results().isEmpty();
+        return !InventoryItemQuery.newQuery(95).name(itemNamePattern).results().isEmpty();
     }
 
     /**
@@ -152,7 +152,7 @@ public class Bank {
      * @param query  the query specifying the item to withdraw.
      * @param option the doAction option to execute on the item.
      */
-    public static boolean withdraw(ItemQuery query, int option) {
+    public static boolean withdraw(InventoryItemQuery query, int option) {
         query.ids(95);
         Item item = query.results().first();
         return item != null && BANK.interact(item.getSlot(), option);
@@ -167,7 +167,7 @@ public class Bank {
      */
     public static boolean withdraw(String itemName, int option) {
         if (itemName != null && !itemName.isEmpty()) {
-            return withdraw(ItemQuery.newQuery().name(itemName), option);
+            return withdraw(InventoryItemQuery.newQuery().name(itemName), option);
         }
         return false;
     }
@@ -181,7 +181,7 @@ public class Bank {
      */
     public static boolean withdraw(int itemId, int option) {
         if (itemId >= 0) {
-            return withdraw(ItemQuery.newQuery().ids(itemId), option);
+            return withdraw(InventoryItemQuery.newQuery().ids(itemId), option);
         }
         return false;
     }
@@ -195,7 +195,7 @@ public class Bank {
      */
     public static boolean withdraw(Pattern pattern, int option) {
         if (pattern != null) {
-            return withdraw(ItemQuery.newQuery().name(pattern), option);
+            return withdraw(InventoryItemQuery.newQuery().name(pattern), option);
         }
         return false;
     }
@@ -207,15 +207,15 @@ public class Bank {
      * @return true if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdrawAll(String name) {
-        return withdraw(ItemQuery.newQuery().name(name), 6);
+        return withdraw(InventoryItemQuery.newQuery().name(name), 6);
     }
 
     public static boolean withdrawAll(int id) {
-        return withdraw(ItemQuery.newQuery().ids(id), 6);
+        return withdraw(InventoryItemQuery.newQuery().ids(id), 6);
     }
 
     public static boolean withdrawAll(Pattern pattern) {
-        return withdraw(ItemQuery.newQuery().name(pattern), 6);
+        return withdraw(InventoryItemQuery.newQuery().name(pattern), 6);
     }
 
     /**
@@ -229,13 +229,13 @@ public class Bank {
     }
 
     /**
-     * Attempts to deposit an item from the given {@link ItemQuery}.
+     * Attempts to deposit an item from the given {@link InventoryItemQuery}.
      *
      * @param query  The query to use for finding the item to deposit.
      * @param option The option to use when depositing the item.
      * @return {@code true} if the item was successfully deposited, {@code false} otherwise.
      */
-    public static boolean deposit(ItemQuery query, int option) {
+    public static boolean deposit(InventoryItemQuery query, int option) {
         query.ids(93);
         Item item = query.results().first();
         return deposit(item, option);
@@ -246,36 +246,36 @@ public class Bank {
     }
 
     public static boolean depositAll(String... itemNames) {
-        return ItemQuery.newQuery(93).name(itemNames).results().stream().map(
+        return InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(
                 i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
-        return ItemQuery.newQuery(93).ids(itemIds).results().stream().map(i -> deposit(i, 7)).toList().contains(
+        return InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(i -> deposit(i, 7)).toList().contains(
                 false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
-        return ItemQuery.newQuery(93).name(patterns).results().stream().map(
+        return InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(
                 i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(String... itemNames) {
         var nameSet = new HashSet<>(Arrays.asList(itemNames));
-        var items = ItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !nameSet.contains(i.getName()));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
-        var items = ItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !idSet.contains(i.getId()));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
-        var items = ItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
+        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
         return !items.map(i -> deposit(i, 7)).toList().contains(false);
     }
@@ -288,7 +288,7 @@ public class Bank {
      * @return True if the item was successfully deposited, false otherwise.
      */
     public static boolean deposit(int itemId, int option) {
-        return deposit(ItemQuery.newQuery(93).ids(itemId), option);
+        return deposit(InventoryItemQuery.newQuery(93).ids(itemId), option);
     }
 
     /**
@@ -300,7 +300,7 @@ public class Bank {
      * @return True if the item was successfully deposited, false otherwise.
      */
     public static boolean deposit(String name, BiFunction<String, CharSequence, Boolean> spred, int option) {
-        return deposit(ItemQuery.newQuery(93).name(name, spred), option);
+        return deposit(InventoryItemQuery.newQuery(93).name(name, spred), option);
     }
 
     /**
@@ -340,7 +340,7 @@ public class Bank {
      * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
-        var item = ItemQuery.newQuery(95).slots(slot).results().first();
+        var item = InventoryItemQuery.newQuery(95).slots(slot).results().first();
         return item != null ? item.getVarbitValue(varbitId) : Integer.MIN_VALUE;
     }
 }

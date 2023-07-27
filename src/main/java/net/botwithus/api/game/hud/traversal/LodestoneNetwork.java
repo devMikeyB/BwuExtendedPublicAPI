@@ -1,7 +1,7 @@
 package net.botwithus.api.game.hud.traversal;
 
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 
 public class LodestoneNetwork {
     public static boolean isOpen() {

@@ -7,7 +7,7 @@ import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;
 
-public class DestroyInterface {
+public class ConfirmItemDestruction {
     public static final int NO_ID = 77529094, YES_ID = 77529093;
 
     public static boolean isOpen() {
@@ -19,10 +19,10 @@ public class DestroyInterface {
      *
      * @param name The name of the item to be destroyed.
      */
-    public static void destroyItem(String name) {
+    public static void confirm(String name) {
         if (Backpack.contains(name) && !isOpen()) {
             Backpack.interact(name, 8);
-            Execution.delayUntil(RandomGenerator.nextInt(800, 1400), DestroyInterface::isOpen);
+            Execution.delayUntil(RandomGenerator.nextInt(800, 1400), ConfirmItemDestruction::isOpen);
         }
         if (isOpen()) {
             MiniMenu.interact(ComponentAction.COMPONENT.getType(), 0, -1, YES_ID);

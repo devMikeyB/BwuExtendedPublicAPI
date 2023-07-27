@@ -1,12 +1,12 @@
 package net.botwithus.api.game.hud.traversal;
 
 import net.botwithus.rs3.game.Client;
+import net.botwithus.rs3.game.queries.builders.objects.SceneObjectQuery;
 import net.botwithus.rs3.game.scene.entities.characters.player.Player;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
 import net.botwithus.rs3.game.minimenu.actions.ObjectAction;
-import net.botwithus.rs3.queries.builders.objects.SceneObjectQuery;
 import net.botwithus.rs3.script.Execution;
 import net.botwithus.rs3.util.RandomGenerator;
 
