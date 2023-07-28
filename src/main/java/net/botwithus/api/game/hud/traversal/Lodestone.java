@@ -50,8 +50,10 @@ public enum Lodestone {
         if (player == null) {
             return false;
         }
-        var coordinate = player.getCoordinate();
-        if (!LodestoneNetwork.isOpen()) {
+//        var coordinate = player.getCoordinate();
+        boolean validate = !LodestoneNetwork.isOpen();
+        System.out.println("[Lodestone] LodestoneNetworkIsNotOpen: " + validate);
+        if (validate) {
             LodestoneNetwork.open();
             Execution.delay(RandomGenerator.nextInt(600, 900));
         }

@@ -1,7 +1,7 @@
 package net.botwithus.api.game.script.treescript;
 
-import net.botwithus.internal.plugins.ScriptDefinition;
-import net.botwithus.rs3.script.Script;
+import net.botwithus.internal.scripts.ScriptDefinition;
+import net.botwithus.rs3.script.LoopingScript;
 
 /**
  * An abstract implementation of a TreeScript that extends from the Script class. This class is designed
@@ -14,7 +14,7 @@ import net.botwithus.rs3.script.Script;
  * A TreeScript may be used for structuring complex or dynamic scripts, where the script behavior may need
  * to change depending on various conditions (represented by the validation of tasks in the tree).
  */
-public abstract class TreeScript extends Script {
+public abstract class TreeScript extends LoopingScript {
     private BranchTask rootTask;
 
     /**

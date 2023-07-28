@@ -215,9 +215,9 @@ public class Inventory implements Iterable<Item> {
         ResultSet<Item> results = InventoryItemQuery.newQuery(id).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            System.out.println("[Inventory#interact(slot, option)]: " + item.getId());
+            System.out.println("[Inventory#interact(slot="+slot+", option="+option+")]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results();
-            System.out.println("[Inventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            System.out.println("[Inventory#interact(slot="+slot+", option="+option+")]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -273,8 +273,14 @@ public class Inventory implements Iterable<Item> {
     public List<Item> getItems() {
         List<Item> items = new ArrayList<>();
         for (Item result : InventoryItemQuery.newQuery(id).results()) {
+//            System.out.println("[Inventory#getItems] Processing item:");
+//            System.out.println("[Inventory#getItems]     " + this.id);
+//            System.out.println("[Inventory#getItems]     " + result.getSlot());
+//            System.out.println("[Inventory#getItems]     " + result.getId());
+//            System.out.println("[Inventory#getItems]     " + result.getStackSize());
             if (result.getId() > -1) {
-                items.add(ItemPool.createItem(this.id, result.getSlot(), result.getId(), result.getStackSize()));
+//                items.add(ItemPool.createItem(this.id, result.getSlot(), result.getId(), result.getStackSize()));
+                items.add(result);
             }
         }
         return items;
