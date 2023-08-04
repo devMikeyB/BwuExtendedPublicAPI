@@ -153,7 +153,6 @@ public class Bank {
      * @param option the doAction option to execute on the item.
      */
     public static boolean withdraw(InventoryItemQuery query, int option) {
-        query.ids(95);
         Item item = query.results().first();
         return item != null && BANK.interact(item.getSlot(), option);
     }

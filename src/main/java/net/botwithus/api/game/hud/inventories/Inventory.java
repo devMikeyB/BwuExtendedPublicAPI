@@ -76,6 +76,19 @@ public class Inventory implements Iterable<Item> {
         return results.stream().allMatch(i -> i.getId() == -1);
     }
 
+    /**
+     * Counts free slots in inventory
+     *
+     * @return the number of free slots
+     */
+    public int countFreeSlots() {
+        ResultSet<Item> results = InventoryItemQuery.newQuery(id).results();
+        if (results.isEmpty()) {
+            return 28;
+        }
+        return (int) results.stream().filter(i -> i.getId() == -1).count();
+    }
+
     public boolean contains(String... names) {
         return !InventoryItemQuery.newQuery(id).name(names).results().isEmpty();
     }

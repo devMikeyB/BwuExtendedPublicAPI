@@ -48,6 +48,10 @@ public final class Backpack {
         return BACKPACK.contains(ids);
     }
 
+    public static int countFreeSlots() {
+        return BACKPACK.countFreeSlots();
+    }
+
     public static int getCount() {
         return BACKPACK.getCount();
     }
