@@ -25,7 +25,7 @@ public class ConfirmItemDestruction {
             Execution.delayUntil(RandomGenerator.nextInt(800, 1400), ConfirmItemDestruction::isOpen);
         }
         if (isOpen()) {
-            MiniMenu.interact(ComponentAction.COMPONENT.getType(), 0, -1, YES_ID);
+            MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, YES_ID);
         }
     }
 }

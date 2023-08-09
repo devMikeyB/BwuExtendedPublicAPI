@@ -36,8 +36,8 @@ public abstract class TreeTask implements ITreeTask {
      */
     public static void traverse(TreeTask treeTask) {
         var validate = treeTask.validate();
-        System.out.println("[TreeTaskBranch] " + treeTask.getClass().getSimpleName() + ": " + validate);
         if (!treeTask.isLeaf()) {
+            System.out.println("[TreeTaskBranch] " + treeTask.getClass().getSimpleName() + ": " + validate);
             traverse(validate ? treeTask.successTask() : treeTask.failureTask());
         } else {
             treeTask.execute();
