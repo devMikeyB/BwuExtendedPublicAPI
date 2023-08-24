@@ -1,6 +1,7 @@
 package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.rs3.game.Distance;
+import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
@@ -20,8 +21,6 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static net.botwithus.api.game.hud.inventories.Backpack.BACKPACK;
-
 
 public class Bank {
 
@@ -30,7 +29,7 @@ public class Bank {
     private static final int PRESET_BROWSING_VARBIT_ID = 49662, SELECTED_OPTIONS_TAB_VARBIT_ID = 45191, WITHDRAW_TYPE_VARBIT_ID = 45189, WITHDRAW_X_VARP_ID = 111;
 
     private static final Inventory BANK = new BankInventory();
-//    private static final Inventory BACKPACK = new Inventory(93, 517, i -> i + 1);
+    private static final Inventory BACKPACK = new Inventory(93, 517, 15, i -> i);
 
     private Bank() {
 
@@ -234,49 +233,51 @@ public class Bank {
      * @param option The option to use when depositing the item.
      * @return {@code true} if the item was successfully deposited, {@code false} otherwise.
      */
-    public static boolean deposit(InventoryItemQuery query, int option) {
-        query.ids(93);
-        Item item = query.results().first();
+    public static boolean deposit(ComponentQuery query, int option) {
+        var item = query.results().first();
         return deposit(item, option);
     }
 
-    public static boolean deposit(Item item, int option) {
-        return item != null && BACKPACK.interact(item.getSlot(), option);
+    public static boolean deposit(Component comp, int option) {
+        return comp != null && comp.interact(option);
     }
 
     public static boolean depositAll(String... itemNames) {
-        return InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(
-                i -> deposit(i, 7)).toList().contains(false);
+        return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+        ).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
-        return InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(i -> deposit(i, 7)).toList().contains(
-                false);
+        return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+        ).toList().contains(false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
-        return InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(
-                i -> deposit(i, 7)).toList().contains(false);
+        return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+        ).toList().contains(false);
     }
 
     public static boolean depositAllExcept(String... itemNames) {
         var nameSet = new HashSet<>(Arrays.asList(itemNames));
         var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !nameSet.contains(i.getName()));
-        return !items.map(i -> deposit(i, 7)).toList().contains(false);
+        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
         var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !idSet.contains(i.getId()));
-        return !items.map(i -> deposit(i, 7)).toList().contains(false);
+        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
         var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
                 i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
-        return !items.map(i -> deposit(i, 7)).toList().contains(false);
+        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
     }
 
     /**
@@ -287,7 +288,7 @@ public class Bank {
      * @return True if the item was successfully deposited, false otherwise.
      */
     public static boolean deposit(int itemId, int option) {
-        return deposit(InventoryItemQuery.newQuery(93).ids(itemId), option);
+        return deposit(ComponentQuery.newQuery(517).item(itemId), option);
     }
 
     /**
@@ -299,7 +300,7 @@ public class Bank {
      * @return True if the item was successfully deposited, false otherwise.
      */
     public static boolean deposit(String name, BiFunction<String, CharSequence, Boolean> spred, int option) {
-        return deposit(InventoryItemQuery.newQuery(93).name(name, spred), option);
+        return deposit(ComponentQuery.newQuery(517).itemName(name, spred), option);
     }
 
     /**
