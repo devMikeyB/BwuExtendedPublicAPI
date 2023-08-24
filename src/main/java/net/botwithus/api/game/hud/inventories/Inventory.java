@@ -321,8 +321,8 @@ public class Inventory implements Iterable<Item> {
                 String s = options.get(j);
                 if (optionpred.apply(s, option)) {
                     int optionIndex = j;
-                    var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results().first();
-                    return result != null && result.interact(optionIndex);
+                    var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).results().first();
+                    return result != null && result.interact(optionMapper.apply(optionIndex));
                 }
             }
         }
