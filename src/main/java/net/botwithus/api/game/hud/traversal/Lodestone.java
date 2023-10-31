@@ -16,6 +16,7 @@ public enum Lodestone {
     BURTHORPE(71565325, 30),
     CANIFIS(71565339, 18523),
     CATHERBY(71565326, 31),
+    CITY_OF_UM(71565348, 35), // TODO Need Varbit to know if they're available or not
     DRAYNOR_VILLAGE(71565327, 32),
     EDGEVILLE(71565328, 33),
     EAGLES_PEAK(71565340, 18524),

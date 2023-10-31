@@ -2,6 +2,7 @@ package net.botwithus.api.game.script.treescript;
 
 import net.botwithus.internal.scripts.ScriptDefinition;
 import net.botwithus.rs3.script.LoopingScript;
+import net.botwithus.rs3.script.config.ScriptConfig;
 
 /**
  * An abstract implementation of a TreeScript that extends from the Script class. This class is designed
@@ -21,10 +22,11 @@ public abstract class TreeScript extends LoopingScript {
      * Constructs a new TreeScript instance.
      *
      * @param name             The name of the script.
+     * @param scriptConfig     The script configuration associated with this script.
      * @param scriptDefinition The script definition associated with this script.
      */
-    public TreeScript(String name, ScriptDefinition scriptDefinition) {
-        super(name, scriptDefinition);
+    public TreeScript(String name, ScriptConfig scriptConfig, ScriptDefinition scriptDefinition) {
+        super(name, scriptConfig, scriptDefinition);
     }
 
     /**
