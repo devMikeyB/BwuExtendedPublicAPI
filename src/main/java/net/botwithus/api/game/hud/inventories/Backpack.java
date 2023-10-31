@@ -1,7 +1,8 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.item.Item;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
+import net.botwithus.rs3.game.Item;
+import net.botwithus.rs3.game.queries.builders.ItemQuery;
+import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
  * @author David
  */
 public final class Backpack {
-
     private static final Pattern SELECTED_ITEM_PATTERN = Pattern.compile("^Use\\s.*?(\\s->\\s).*$");
 
     static final Inventory BACKPACK = new Inventory(93, 1473, 5, i -> i + 1);
@@ -23,33 +23,21 @@ public final class Backpack {
     }
 
     /**
+     * Checks if the backpack is full.
      *
-     *   Checks if the backpack is full.
-     *
-     *   @return true if the backpack is full, false otherwise
+     * @return true if the backpack is full, false otherwise
      */
     public static boolean isFull() {
         return BACKPACK.isFull();
     }
 
     /**
+     * Checks if the backpack is empty.
      *
-     *   Checks if the backpack is empty.
-     *   @return true if the backpack is empty, false otherwise.
+     * @return true if the backpack is empty, false otherwise.
      */
     public static boolean isEmpty() {
         return BACKPACK.isEmpty();
-    }
-
-    /**
-     *
-     *   Checks if the given {@link InventoryQuery} is contained in the {@link #BACKPACK}.
-     *
-     *   @param query The {@link InventoryQuery} to check for.
-     *   @return {@code true} if the {@link InventoryQuery} is contained in the {@link #BACKPACK}, {@code false} otherwise.
-     */
-    public static boolean contains(InventoryQuery query) {
-        return BACKPACK.contains(query);
     }
 
     public static boolean contains(String... names) {
@@ -58,6 +46,10 @@ public final class Backpack {
 
     public static boolean contains(int... ids) {
         return BACKPACK.contains(ids);
+    }
+
+    public static int countFreeSlots() {
+        return BACKPACK.countFreeSlots();
     }
 
     public static int getCount() {
@@ -96,115 +88,108 @@ public final class Backpack {
         return BACKPACK.containsAllOf(names);
     }
 
-    public static boolean containsAllOf(Pattern pattern) { return BACKPACK.containsAllOf(pattern); }
+    public static boolean containsAllOf(Pattern pattern) {
+        return BACKPACK.containsAllOf(pattern);
+    }
 
-    public static boolean containsAnyExcept(String... names) { return BACKPACK.containsAnyExcept(names); }
+    public static boolean containsAnyExcept(String... names) {
+        return BACKPACK.containsAnyExcept(names);
+    }
 
-    public static boolean containsAnyExcept(Pattern... patterns) { return BACKPACK.containsAnyExcept(patterns); }
+    public static boolean containsAnyExcept(Pattern... patterns) {
+        return BACKPACK.containsAnyExcept(patterns);
+    }
 
-    public static boolean doAction(int slot, String option) {
-        return BACKPACK.doAction(slot, option);
+    public static boolean interact(int slot, String option) {
+        return BACKPACK.interact(slot, option);
     }
 
     /**
+     * Executes an action on the backpack.
      *
-     *   Executes an action on the backpack.
-     *
-     *   @param slot The slot of the backpack to perform the action on.
-     *   @param option The option to perform on the slot.
-     *   @return Whether the action was successful.
+     * @param slot   The slot of the backpack to perform the action on.
+     * @param option The option to perform on the slot.
+     * @return Whether the action was successful.
      */
-    public static boolean doAction(int slot, int option) {
-        return BACKPACK.doAction(slot, option);
+    public static boolean interact(int slot, int option) {
+        return BACKPACK.interact(slot, option);
     }
 
     /**
+     * Executes an action on the backpack.
      *
-     *   Executes an action on the backpack.
-     *
-     *   @param name The name of the action to be executed.
-     *   @return True if the action was successful, false otherwise.
+     * @param name The name of the action to be executed.
+     * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name) {
-        return BACKPACK.doAction(name);
+    public static boolean interact(String name) {
+        return BACKPACK.interact(name);
     }
 
     /**
+     * Executes an action on a given item in the backpack.
      *
-     *   Executes an action on a given item in the backpack.
-     *
-     *   @param name The name of the item to perform the action on.
-     *   @param option The action to perform on the item.
-     *   @return True if the action was successful, false otherwise.
+     * @param name   The name of the item to perform the action on.
+     * @param option The action to perform on the item.
+     * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name, String option) {
-        return BACKPACK.doAction(name, option);
+    public static boolean interact(String name, String option) {
+        return BACKPACK.interact(name, option);
     }
 
     /**
+     * Executes an action on the backpack.
      *
-     *   Executes an action on the backpack.
-     *
-     *   @param name The name of the action to be executed.
-     *   @param option The option of the action to be executed.
-     *   @param namepred The predicate to be used to validate the name.
-     *   @param optionpred The predicate to be used to validate the option.
-     *   @return True if the action was successful, false otherwise.
+     * @param name       The name of the action to be executed.
+     * @param option     The option of the action to be executed.
+     * @param namepred   The predicate to be used to validate the name.
+     * @param optionpred The predicate to be used to validate the option.
+     * @return True if the action was successful, false otherwise.
      */
-    public static boolean doAction(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
-        return BACKPACK.doAction(name, option, namepred, optionpred);
+    public static boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
+        return BACKPACK.interact(name, option, namepred, optionpred);
     }
 
     /**
+     * Executes an action on the backpack
      *
-     *   Executes an action on the backpack
-     *
-     *   @param name The name of the action to be executed
-     *   @param option The option to be used for the action
-     *   @return The result of the action
+     * @param name   The name of the action to be executed
+     * @param option The option to be used for the action
+     * @return The result of the action
      */
-    public static boolean doAction(String name, int option) {
-        return BACKPACK.doAction(name, option);
+    public static boolean interact(String name, int option) {
+        return BACKPACK.interact(name, option);
     }
 
-    public static boolean doAction(Pattern namePattern, String option) { return BACKPACK.doAction(namePattern, option); }
+    public static boolean interact(Pattern namePattern, String option) {
+        return BACKPACK.interact(namePattern, option);
+    }
 
-    public static boolean doAction(Pattern namePattern, int option) { return BACKPACK.doAction(namePattern, option); }
-
-    /**
-     *
-     *   Returns the capacity of the backpack.
-     *
-     *   @return The capacity of the backpack.
-     */
-    public static int capacity() {
-        return BACKPACK.getSlotCount();
+    public static boolean interact(Pattern namePattern, int option) {
+        return BACKPACK.interact(namePattern, option);
     }
 
     /**
+     * Gets the value of a varbit in a given slot.
      *
-     *   Gets the value of a varbit in a given slot.
-     *
-     *   @param slot The slot of the varbit.
-     *   @param varbitId The ID of the varbit.
-     *   @return The value of the varbit.
+     * @param slot     The slot of the varbit.
+     * @param varbitId The ID of the varbit.
+     * @return The value of the varbit.
      */
     public static int getVarbitValue(int slot, int varbitId) {
         return BACKPACK.getVarbitValue(slot, varbitId);
     }
 
     /**
+     * Retrieves an item from the backpack.
      *
-     *   Retrieves an item from the backpack.
-     *
-     *   @param name The name of the item to retrieve.
-     *   @return An {@link Optional} containing the item if it exists, or an empty {@link Optional} if it does not.
+     * @param name The name of the item to retrieve.
+     * @return An {@link Optional} containing the item if it exists, or an empty {@link Optional} if it does not.
      */
-    public static Optional<Item> getItem(String name) {
+    public static Item getItem(String name) {
         return BACKPACK.getItem(name);
     }
 
-    public static Optional<Item> getItem(Pattern pattern) {
+    public static Item getItem(Pattern pattern) {
         return BACKPACK.getItem(pattern);
     }
 
@@ -212,7 +197,7 @@ public final class Backpack {
         return BACKPACK.getItems();
     }
 
-    public static Optional<Item> getSelectedItem() {
-        return InventoryQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
+    public static Item getSelectedItem() {
+        return InventoryItemQuery.newQuery(93).option(SELECTED_ITEM_PATTERN).results().first();
     }
 }

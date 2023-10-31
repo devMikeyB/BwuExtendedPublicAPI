@@ -1,24 +1,21 @@
 package net.botwithus.api.game.world;
 
-import net.botwithus.rs3.util.Random;
-import net.botwithus.rs3.queries.Queries;
-import net.botwithus.rs3.world.Area;
-import net.botwithus.rs3.world.Position;
-import net.botwithus.rs3.world.World;
+import net.botwithus.rs3.game.Client;
+import net.botwithus.rs3.util.RandomGenerator;
+import net.botwithus.rs3.game.Area;
+import net.botwithus.rs3.game.Coordinate;
+import net.botwithus.rs3.game.Travel;
 
 public class Traverse {
-    public static boolean to(Position position) {
-        var player = Queries.self();
-        if (player == null)
+    public static boolean to(Coordinate coordinate) {
+        var player = Client.getLocalPlayer();
+        if (player == null) {
             return false;
-        if (player.distance(position) > 60) {
-            return World.bresenhamWalkTo(position, false, Random.nextInt(38, 68));
-        } else {
-            return World.walkTo(position);
         }
+        return Travel.walkTo(coordinate);
     }
 
     public static boolean to(Area area) {
-        return to(area.getRandomPosition());
+        return to(area.getCoordinates().get(RandomGenerator.nextInt(area.getCoordinates().size())));
     }
 }

@@ -1,12 +1,11 @@
 package net.botwithus.api.game.hud.inventories;
 
-import net.botwithus.rs3.interfaces.Component;
-import net.botwithus.rs3.item.Item;
-import net.botwithus.rs3.queries.ResultSet;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
-import net.botwithus.rs3.queries.builders.inventories.InventoryQuery;
+import net.botwithus.rs3.game.hud.interfaces.Component;
+import net.botwithus.rs3.game.Item;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
+import net.botwithus.rs3.game.queries.results.ResultSet;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public class BankInventory extends Inventory {
@@ -19,23 +18,22 @@ public class BankInventory extends Inventory {
         case 7 -> 8;
         default -> 1;
     };
+
     public BankInventory() {
         super(95, 517, 195, OPTION_MAPPER);
     }
 
     @Override
-    public boolean doAction(int slot, int option) {
-        ResultSet<Item> results = InventoryQuery.newQuery(getId()).slot(slot).results();
-        Optional<Item> item = results.first();
-        if(item.isPresent()) {
-            Item i = item.get();
-            System.out.println("[Inventory#doAction(slot, option)]: " + i.getItemId());
-            ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex)
-                    .item(i.getItemId())
-                    .componentIndex(componentIndex)
-                    .results();
-            System.out.println("[Inventory#doAction(slot, option)]: QueryResults: " + queryResults.size());
-            return queryResults.first().map(c -> c.doAction(option)).orElse(false);
+    public boolean interact(int slot, int option) {
+        ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).slots(slot).results();
+        Item item = results.first();
+        if (item != null) {
+            System.out.println("[Inventory#interact(slot, option)]: " + item.getId());
+            ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
+                    item.getId()).componentIndex(componentIndex).results();
+            System.out.println("[Inventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            var result = queryResults.first();
+            return result != null && result.interact(option);
         }
         return false;
     }

@@ -1,11 +1,11 @@
 package net.botwithus.api.game.hud.traversal;
 
-import net.botwithus.rs3.interfaces.Interface;
-import net.botwithus.rs3.queries.builders.components.ComponentQuery;
+import net.botwithus.rs3.game.hud.interfaces.Interfaces;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 
 public class LodestoneNetwork {
     public static boolean isOpen() {
-        return Interface.isInterfaceOpen(1092);
+        return Interfaces.isOpen(1092);
     }
 
     /**
@@ -14,11 +14,8 @@ public class LodestoneNetwork {
      * @return {@code true} if the interface was opened, {@code false} otherwise.
      */
     public static boolean open() {
-        return Interface.find(ComponentQuery.newQuery(1465)
-                        .option("Lodestone network"))
-                .first()
-                .map(c -> c.doAction("Lodestone network"))
-                .orElse(false);
+        var result = ComponentQuery.newQuery(1465).option("Lodestone network").results().first();
+        return result != null && result.interact("Lodestone network");
     }
 
     /**
@@ -27,10 +24,7 @@ public class LodestoneNetwork {
      * @return true if the player was successfully teleported, false otherwise
      */
     public static boolean teleportToPreviousDestination() {
-        return Interface.find(ComponentQuery.newQuery(1465)
-                        .option("Previous Destination"))
-                .first()
-                .map(c -> c.doAction("Previous Destination"))
-                .orElse(false);
+        var result = ComponentQuery.newQuery(1465).option("Previous Destination").results().first();
+        return result != null && result.interact("Previous Destination");
     }
 }

@@ -1,10 +1,9 @@
 package net.botwithus.api.game;
 
-import net.botwithus.rs3.Client;
-import net.botwithus.rs3.queries.Queries;
+import net.botwithus.rs3.game.Client;
 
 public class RuneScape {
     public static boolean isLoggedIn() {
-        return Client.getGameState() == 30 && Queries.self() != null;
+        return Client.getGameState() == Client.GameState.LOGGED_IN && Client.getLocalPlayer() != null;
     }
 }
