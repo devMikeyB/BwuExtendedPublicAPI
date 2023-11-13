@@ -1,7 +1,6 @@
 package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.api.game.Items;
-import net.botwithus.internal.pooling.ItemPool;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.js5.types.InventoryType;
