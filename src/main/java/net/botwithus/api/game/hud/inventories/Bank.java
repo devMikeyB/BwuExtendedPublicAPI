@@ -41,7 +41,7 @@ public class Bank {
      * @return {@code true} if the bank was successfully opened, {@code false} otherwise.
      */
     public static boolean open() {
-        var obj = SceneObjectQuery.newQuery().name("Bank", String::contains).results().nearest();
+        var obj = SceneObjectQuery.newQuery().name(bankPattern).results().nearest();
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
         System.out.println("[Bank] Just a test");
         var useObj = true;
