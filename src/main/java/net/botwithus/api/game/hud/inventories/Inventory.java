@@ -213,7 +213,7 @@ public class Inventory implements Iterable<Item> {
      * @return True if the action was successful, false otherwise.
      */
     public boolean interact(int slot, String option) {
-        return interact(slot, Regex.getPattern(option));
+        return interact(slot, Regex.getPatternForExactString(option));
     }
 
     /**
@@ -309,15 +309,19 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
         Item item = InventoryItemQuery.newQuery(id).name(name, namepred).results().first();
+        System.out.println("Inventory#Interact: " + name + " | " + option);
         if (item != null) {
+            System.out.println("Item Name: " + item.getName());
             List<String> options;
             if (id == 94) {
                 options = Items.getWornEquipmentOptions(item.getConfigType());
             } else {
                 options = Items.getBankOptions(item.getConfigType());
             }
+            System.out.println("Item Options: " + options.toString());
             for (int j = 0; j < options.size(); j++) {
                 String s = options.get(j);
+                System.out.println("Option match " + s + " | " + option + " = " + (optionpred.apply(s, option)));
                 if (optionpred.apply(s, option)) {
                     int optionIndex = j;
                     var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).results().first();

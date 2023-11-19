@@ -41,24 +41,36 @@ public class Bank {
      * @return {@code true} if the bank was successfully opened, {@code false} otherwise.
      */
     public static boolean open() {
-        var obj = SceneObjectQuery.newQuery().name(bankPattern).results().nearest();
+        var obj = SceneObjectQuery.newQuery().name("Bank", String::contains).results().nearest();
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
+        System.out.println("[Bank] Just a test");
         var useObj = true;
 
+        System.out.println("Object is " + (obj != null ? "not null" : "null"));
+        System.out.println("Npc is " + (npc != null ? "not null" : "null"));
+
         if (obj != null && npc != null) {
-            useObj = Distance.to(obj) < Distance.to(npc);
+            System.out.println("Distance.to(obj): " + Distance.to(obj));
+            System.out.println("Distance.to(npc): " + Distance.to(npc));
+            var objDist = Distance.to(obj);
+            var npcDist = Distance.to(npc);
+            if (!Double.isNaN(objDist) && !Double.isNaN(npcDist))
+                useObj = Distance.to(obj) < Distance.to(npc);
+            System.out.println("useObj: " + useObj);
         }
         if (obj != null && useObj) {
+            System.out.println("Interacting via Object");
             var actions = obj.getOptions();
+            System.out.println("Available Options: " + actions);
             if (!actions.isEmpty()) {
                 var action = actions.stream().filter(i -> i != null && !i.isEmpty()).findFirst();
-                return action.isPresent() && obj.interact(action.get());
+                System.out.println("action.isPresent(): " + action.isPresent());
+                System.out.println("Interaction Result: " + (action.isPresent() && obj.interact(action.get())));
             } else {
-                System.out.println("[Bank] No options on object");
-                return false;
+                System.out.println("No options on object");
             }
         } else if (npc != null) {
-            return npc.interact("Bank");
+            System.out.println("Interacting via Npc: " + npc.interact("Bank"));
         }
 
         return false;
