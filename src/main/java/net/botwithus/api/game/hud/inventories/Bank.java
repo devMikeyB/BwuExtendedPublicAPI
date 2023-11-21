@@ -256,40 +256,49 @@ public class Bank {
 
     public static boolean depositAll(String... itemNames) {
         return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
         return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
         return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)
+                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
     public static boolean depositAllExcept(String... itemNames) {
         var nameSet = new HashSet<>(Arrays.asList(itemNames));
-        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
-                i -> !nameSet.contains(i.getName()));
-        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
+        var idMap = Backpack.getItems().stream().filter(i -> Arrays.stream(itemNames).toList().contains(i)).collect(Collectors.toMap(Item::getId, Item::getName));
+        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
+                i -> !nameSet.contains(idMap.get(i.getItemId())))
+                .map(Component::getItemId)
+                .collect(Collectors.toSet());
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
-        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
-                i -> !idSet.contains(i.getId()));
-        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
+        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
+                i -> !idSet.contains(i.getItemId()))
+                .map(Component::getItemId)
+                .collect(Collectors.toSet());
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
-        var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
-                i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
-        return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
+        var idMap = Backpack.getItems().stream().filter(i -> i.getName() != null && Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true))
+                .collect(Collectors.toMap(Item::getId, Item::getName));
+        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
+                i -> !idMap.containsKey(i.getItemId()))
+                .map(Component::getItemId)
+                .collect(Collectors.toSet());
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
     }
 
     /**
