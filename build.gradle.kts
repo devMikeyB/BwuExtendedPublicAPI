@@ -49,6 +49,15 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 publishing {
+    repositories {
+        maven {
+            url = uri("https://nexus.botwithus.net/repository/maven-snapshots/")
+            credentials {
+                username = System.getenv("MAVEN_REPO_USER")
+                password = System.getenv("MAVEN_REPO_PASS")
+            }
+        }
+    }
     publications {
         create<MavenPublication>("maven") {
             groupId = "net.botwithus.xapi.public"

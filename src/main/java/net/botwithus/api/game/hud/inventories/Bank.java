@@ -65,14 +65,17 @@ public class Bank {
             if (!actions.isEmpty()) {
                 var action = actions.stream().filter(i -> i != null && !i.isEmpty()).findFirst();
                 System.out.println("action.isPresent(): " + action.isPresent());
-                System.out.println("Interaction Result: " + (action.isPresent() && obj.interact(action.get())));
+                var result = action.isPresent() && obj.interact(action.get()) && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
+                System.out.println("Interaction Result: " + result);
+                return result;
             } else {
                 System.out.println("No options on object");
             }
         } else if (npc != null) {
-            System.out.println("Interacting via Npc: " + npc.interact("Bank"));
+            var result = npc.interact("Bank") && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
+            System.out.println("Interacting via Npc: " + result);
+            return result;
         }
-
         return false;
     }
 
@@ -288,7 +291,7 @@ public class Bank {
 
     public static boolean depositAllExcept(Pattern... patterns) {
         var items = InventoryItemQuery.newQuery(93).option("Deposit-All").results().stream().filter(
-                i -> !Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true));
+                i -> !Arrays.stream(patterns).map(p -> i.getName() != null && p.matcher(i.getName()).matches()).toList().contains(true));
         return !items.map(i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7)).toList().contains(false);
     }
 
