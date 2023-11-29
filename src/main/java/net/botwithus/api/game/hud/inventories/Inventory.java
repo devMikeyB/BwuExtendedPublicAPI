@@ -134,7 +134,7 @@ public class Inventory implements Iterable<Item> {
     }
 
     public boolean containsAnyExcept(Pattern... patterns) {
-        return getItems().stream().map(Item::getName).distinct().filter(i -> !Arrays.stream(patterns).map(p -> p.matcher(i).matches()).toList().contains(true)).toList().isEmpty();
+        return !getItems().stream().map(Item::getName).distinct().filter(i -> !Arrays.stream(patterns).map(p -> p.matcher(i).matches()).toList().contains(true)).toList().isEmpty();
     }
 
     public int getCount() {

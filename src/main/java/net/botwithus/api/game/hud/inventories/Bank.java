@@ -258,20 +258,20 @@ public class Bank {
     }
 
     public static boolean depositAll(String... itemNames) {
-        return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+        return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(Item::getId).distinct().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
-        return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+        return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(Item::getId).distinct().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
-        return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i.getId()), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+        return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(Item::getId).distinct().map(
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
         ).toList().contains(false);
     }
 
