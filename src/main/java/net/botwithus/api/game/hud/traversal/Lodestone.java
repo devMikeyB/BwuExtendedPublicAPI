@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud.traversal;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.rs3.game.Client;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
@@ -39,6 +40,7 @@ public enum Lodestone {
 
     private final int interactId;
     private final int varbitId;
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     Lodestone(int interactId, int varbitId) {
         this.interactId = interactId;
@@ -53,7 +55,7 @@ public enum Lodestone {
         }
 //        var coordinate = player.getCoordinate();
         boolean validate = !LodestoneNetwork.isOpen();
-        System.out.println("[Lodestone] LodestoneNetworkIsNotOpen: " + validate);
+        log.atInfo().log("[Lodestone] LodestoneNetworkIsNotOpen: " + validate);
         if (validate) {
             LodestoneNetwork.open();
             Execution.delay(RandomGenerator.nextInt(600, 900));

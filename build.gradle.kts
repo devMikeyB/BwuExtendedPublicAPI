@@ -22,6 +22,7 @@ tasks.withType<JavaCompile> {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.flogger:flogger:0.7.4")
     //implementation("net.botwithus.rs3:api:1.0.0-SNAPSHOT")
     implementation("net.botwithus.rs3:botwithus-api:1.0.0-SNAPSHOT")
     implementation("org.jetbrains:annotations:24.0.0")

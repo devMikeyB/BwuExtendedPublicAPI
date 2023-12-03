@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.vars.VarManager;
 import net.botwithus.rs3.input.GameInput;
@@ -10,14 +11,15 @@ public class EnterXInterface {
     public static boolean isOpen() {
         return Interfaces.isOpen(1603);
     }
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     public static void enterValue(int value) {
         Execution.delay(RandomGenerator.nextInt(100, 300));
-        System.out.println("Entering value: " + value);
+        log.atInfo().log("Entering value: " + value);
         try {
             GameInput.setIntInput(value);
         } catch (Throwable e) {
-            System.out.println("Failed to enter quantity");
+            log.atSevere().withCause(e).log("Failed to enter quantity in the MakeXInterface");
             e.printStackTrace();
         }
         Execution.delay(RandomGenerator.nextInt(100, 300));

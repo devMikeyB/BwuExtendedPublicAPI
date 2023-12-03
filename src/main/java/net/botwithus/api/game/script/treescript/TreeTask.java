@@ -1,5 +1,6 @@
 package net.botwithus.api.game.script.treescript;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.api.game.script.treescript.interfaces.ITreeTask;
 
 /**
@@ -7,6 +8,7 @@ import net.botwithus.api.game.script.treescript.interfaces.ITreeTask;
  * all types of tasks.
  */
 public abstract class TreeTask implements ITreeTask {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     /** {@inheritDoc} */
     @Override
@@ -37,7 +39,7 @@ public abstract class TreeTask implements ITreeTask {
     public static void traverse(TreeTask treeTask) {
         var validate = treeTask.validate();
         if (!treeTask.isLeaf()) {
-            System.out.println("[TreeTaskBranch] " + treeTask.getClass().getSimpleName() + ": " + validate);
+            log.atInfo().log("[TreeTaskBranch] " + treeTask.getClass().getSimpleName() + ": " + validate);
             traverse(validate ? treeTask.successTask() : treeTask.failureTask());
         } else {
             treeTask.execute();

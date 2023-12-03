@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud.inventories;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.rs3.game.Distance;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
@@ -30,6 +31,7 @@ public class Bank {
 
     private static final Inventory BANK = new BankInventory();
     private static final Inventory BACKPACK = new Inventory(93, 517, 15, i -> i);
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     private Bank() {
 
@@ -43,37 +45,37 @@ public class Bank {
     public static boolean open() {
         var obj = SceneObjectQuery.newQuery().name(bankPattern).results().nearest();
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
-        System.out.println("[Bank] Just a test");
+        log.atInfo().log("[Bank] Just a test");
         var useObj = true;
 
-        System.out.println("Object is " + (obj != null ? "not null" : "null"));
-        System.out.println("Npc is " + (npc != null ? "not null" : "null"));
+        log.atInfo().log("Object is " + (obj != null ? "not null" : "null"));
+        log.atInfo().log("Npc is " + (npc != null ? "not null" : "null"));
 
         if (obj != null && npc != null) {
-            System.out.println("Distance.to(obj): " + Distance.to(obj));
-            System.out.println("Distance.to(npc): " + Distance.to(npc));
+            log.atInfo().log("Distance.to(obj): " + Distance.to(obj));
+            log.atInfo().log("Distance.to(npc): " + Distance.to(npc));
             var objDist = Distance.to(obj);
             var npcDist = Distance.to(npc);
             if (!Double.isNaN(objDist) && !Double.isNaN(npcDist))
                 useObj = Distance.to(obj) < Distance.to(npc);
-            System.out.println("useObj: " + useObj);
+            log.atInfo().log("useObj: " + useObj);
         }
         if (obj != null && useObj) {
-            System.out.println("Interacting via Object");
+            log.atInfo().log("Interacting via Object");
             var actions = obj.getOptions();
-            System.out.println("Available Options: " + actions);
+            log.atInfo().log("Available Options: " + actions);
             if (!actions.isEmpty()) {
                 var action = actions.stream().filter(i -> i != null && !i.isEmpty()).findFirst();
-                System.out.println("action.isPresent(): " + action.isPresent());
+                log.atInfo().log("action.isPresent(): " + action.isPresent());
                 var result = action.isPresent() && obj.interact(action.get()) && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
-                System.out.println("Interaction Result: " + result);
+                log.atInfo().log("Interaction Result: " + result);
                 return result;
             } else {
-                System.out.println("No options on object");
+                log.atInfo().log("No options on object");
             }
         } else if (npc != null) {
             var result = npc.interact("Bank") && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
-            System.out.println("Interacting via Npc: " + result);
+            log.atInfo().log("Interacting via Npc: " + result);
             return result;
         }
         return false;
@@ -254,24 +256,24 @@ public class Bank {
     }
 
     public static boolean deposit(Component comp, int option) {
-        return comp != null && comp.interact(option);
+        return comp != null && comp.interact(option) && Execution.delay(RandomGenerator.nextInt(400, 700));
     }
 
     public static boolean depositAll(String... itemNames) {
         return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
         ).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
         return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
         ).toList().contains(false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
         return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))
+                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
         ).toList().contains(false);
     }
 
@@ -282,7 +284,7 @@ public class Bank {
                 i -> !nameSet.contains(idMap.get(i.getItemId())))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
@@ -291,7 +293,7 @@ public class Bank {
                 i -> !idSet.contains(i.getItemId()))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
@@ -301,7 +303,7 @@ public class Bank {
                 i -> !idMap.containsKey(i.getItemId()))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7) && Execution.delay(RandomGenerator.nextInt(100, 800))).toList().contains(false);
+        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
     }
 
     /**

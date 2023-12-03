@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud.inventories;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.api.game.Items;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.Item;
@@ -26,6 +27,7 @@ public class Inventory implements Iterable<Item> {
     protected final int componentIndex;
 
     private final Function<Integer, Integer> optionMapper;
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     public Inventory(int id, int interfaceIndex, int componentIndex, Function<Integer, Integer> optionMapper) {
         this.id = id;
@@ -227,9 +229,9 @@ public class Inventory implements Iterable<Item> {
         ResultSet<Item> results = InventoryItemQuery.newQuery(id).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            System.out.println("[Inventory#interact(slot="+slot+", option="+option+")]: " + item.getId());
+            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results();
-            System.out.println("[Inventory#interact(slot="+slot+", option="+option+")]: QueryResults: " + queryResults.size());
+            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -285,11 +287,11 @@ public class Inventory implements Iterable<Item> {
     public List<Item> getItems() {
         List<Item> items = new ArrayList<>();
         for (Item result : InventoryItemQuery.newQuery(id).results()) {
-//            System.out.println("[Inventory#getItems] Processing item:");
-//            System.out.println("[Inventory#getItems]     " + this.id);
-//            System.out.println("[Inventory#getItems]     " + result.getSlot());
-//            System.out.println("[Inventory#getItems]     " + result.getId());
-//            System.out.println("[Inventory#getItems]     " + result.getStackSize());
+//            log.atInfo().log("[Inventory#getItems] Processing item:");
+//            log.atInfo().log("[Inventory#getItems]     " + this.id);
+//            log.atInfo().log("[Inventory#getItems]     " + result.getSlot());
+//            log.atInfo().log("[Inventory#getItems]     " + result.getId());
+//            log.atInfo().log("[Inventory#getItems]     " + result.getStackSize());
             if (result.getId() > -1) {
 //                items.add(ItemPool.createItem(this.id, result.getSlot(), result.getId(), result.getStackSize()));
                 items.add(result);
@@ -309,19 +311,19 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
         Item item = InventoryItemQuery.newQuery(id).name(name, namepred).results().first();
-        System.out.println("Inventory#Interact: " + name + " | " + option);
+        log.atInfo().log("Inventory#Interact: " + name + " | " + option);
         if (item != null) {
-            System.out.println("Item Name: " + item.getName());
+            log.atInfo().log("Item Name: " + item.getName());
             List<String> options;
             if (id == 94) {
                 options = Items.getWornEquipmentOptions(item.getConfigType());
             } else {
                 options = Items.getBankOptions(item.getConfigType());
             }
-            System.out.println("Item Options: " + options.toString());
+            log.atInfo().log("Item Options: " + options.toString());
             for (int j = 0; j < options.size(); j++) {
                 String s = options.get(j);
-                System.out.println("Option match " + s + " | " + option + " = " + (optionpred.apply(s, option)));
+                log.atInfo().log("Option match " + s + " | " + option + " = " + (optionpred.apply(s, option)));
                 if (optionpred.apply(s, option)) {
                     int optionIndex = j;
                     var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).results().first();

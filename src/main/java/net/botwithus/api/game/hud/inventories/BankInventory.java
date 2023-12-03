@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud.inventories;
 
+import com.google.common.flogger.FluentLogger;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
@@ -18,6 +19,7 @@ public class BankInventory extends Inventory {
         case 7 -> 8;
         default -> 1;
     };
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
 
     public BankInventory() {
         super(95, 517, 195, OPTION_MAPPER);
@@ -28,10 +30,10 @@ public class BankInventory extends Inventory {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            System.out.println("[Inventory#interact(slot, option)]: " + item.getId());
+            log.atInfo().log("[Inventory#interact(slot, option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            System.out.println("[Inventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            log.atInfo().log("[Inventory#interact(slot, option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
