@@ -100,6 +100,10 @@ public final class Backpack {
         return BACKPACK.containsAnyExcept(patterns);
     }
 
+    public static boolean containsItemByCategory(int... categoryIds) {
+        return BACKPACK.containsItemByCategory(categoryIds);
+    }
+
     public static boolean interact(int slot, String option) {
         return BACKPACK.interact(slot, option);
     }

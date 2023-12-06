@@ -139,6 +139,10 @@ public class Inventory implements Iterable<Item> {
         return !getItems().stream().map(Item::getName).distinct().filter(i -> !Arrays.stream(patterns).map(p -> p.matcher(i).matches()).toList().contains(true)).toList().isEmpty();
     }
 
+    public boolean containsItemByCategory(int... categoryIds) {
+        return Arrays.stream(categoryIds).anyMatch(i -> !InventoryItemQuery.newQuery(id).category(i).results().isEmpty());
+    }
+
     public int getCount() {
         return InventoryItemQuery.newQuery(id).results().size();
     }
@@ -311,23 +315,25 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean interact(String name, String option, BiFunction<String, CharSequence, Boolean> namepred, BiFunction<String, CharSequence, Boolean> optionpred) {
         Item item = InventoryItemQuery.newQuery(id).name(name, namepred).results().first();
-        log.atInfo().log("Inventory#Interact: " + name + " | " + option);
         if (item != null) {
-            log.atInfo().log("Item Name: " + item.getName());
             List<String> options;
             if (id == 94) {
                 options = Items.getWornEquipmentOptions(item.getConfigType());
             } else {
                 options = Items.getBankOptions(item.getConfigType());
             }
-            log.atInfo().log("Item Options: " + options.toString());
             for (int j = 0; j < options.size(); j++) {
                 String s = options.get(j);
-                log.atInfo().log("Option match " + s + " | " + option + " = " + (optionpred.apply(s, option)));
                 if (optionpred.apply(s, option)) {
                     int optionIndex = j;
-                    var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).results().first();
-                    return result != null && result.interact(optionMapper.apply(optionIndex));
+                    try {
+                        var result = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).results().first();
+                        return result != null && result.interact(optionMapper.apply(optionIndex));
+                    } catch (Exception e) {
+                        log.atSevere().withCause(e).log("ComponentQuery Exception for { interfaceIndex: " + interfaceIndex + " }, { itemId: " + item.getId() + " }, { componentIndex: " + componentIndex + " }");
+                        return false;
+                    }
+
                 }
             }
         }

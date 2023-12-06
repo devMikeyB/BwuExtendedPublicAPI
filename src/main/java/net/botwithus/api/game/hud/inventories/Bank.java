@@ -7,6 +7,7 @@ import net.botwithus.rs3.game.hud.interfaces.Interfaces;
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.minimenu.MiniMenu;
 import net.botwithus.rs3.game.minimenu.actions.ComponentAction;
+import net.botwithus.rs3.game.minimenu.actions.ObjectAction;
 import net.botwithus.rs3.game.queries.builders.characters.NpcQuery;
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
@@ -25,13 +26,16 @@ import java.util.stream.Collectors;
 
 public class Bank {
 
-    private static final Pattern bankPattern = Pattern.compile("^(?!.*deposit).*(bank).*$", Pattern.CASE_INSENSITIVE);
 
     private static final int PRESET_BROWSING_VARBIT_ID = 49662, SELECTED_OPTIONS_TAB_VARBIT_ID = 45191, WITHDRAW_TYPE_VARBIT_ID = 45189, WITHDRAW_X_VARP_ID = 111;
 
     private static final Inventory BANK = new BankInventory();
     private static final Inventory BACKPACK = new Inventory(93, 517, 15, i -> i);
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
+    private static final Pattern BANK_NAME_PATTERN = Pattern.compile("^(?!.*deposit).*(bank|counter).*$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern BANK_OPTION_PATTERN = Pattern.compile("^.*(Bank|Use).*$");
+    private static final String LAST_PRESET_OPTION = "Load Last Preset from";
 
     private Bank() {
 
@@ -43,7 +47,10 @@ public class Bank {
      * @return {@code true} if the bank was successfully opened, {@code false} otherwise.
      */
     public static boolean open() {
-        var obj = SceneObjectQuery.newQuery().name(bankPattern).results().nearest();
+//        var obj = SceneObjectQuery.newQuery()
+//                .name(BANK_NAME_PATTERN)
+//                .option(BANK_OPTION_PATTERN).results().nearest();
+        var obj = SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Use").or(SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Bank")).results().nearest();
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
         log.atInfo().log("[Bank] Just a test");
         var useObj = true;
@@ -61,14 +68,17 @@ public class Bank {
             log.atInfo().log("useObj: " + useObj);
         }
         if (obj != null && useObj) {
-            log.atInfo().log("Interacting via Object");
+            log.atInfo().log("Interacting via Object: " + obj.getName());
             var actions = obj.getOptions();
             log.atInfo().log("Available Options: " + actions);
             if (!actions.isEmpty()) {
                 var action = actions.stream().filter(i -> i != null && !i.isEmpty()).findFirst();
                 log.atInfo().log("action.isPresent(): " + action.isPresent());
                 var result = action.isPresent() && obj.interact(action.get()) && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
-                log.atInfo().log("Interaction Result: " + result);
+                log.atInfo().log("Interaction Result1: " + result);
+                if (!result) {
+                    result = obj.interact(ObjectAction.OBJECT2.getType()) && Execution.delayUntil(RandomGenerator.nextInt(3000, 5000), Bank::isOpen);
+                }
                 return result;
             } else {
                 log.atInfo().log("No options on object");
@@ -103,6 +113,34 @@ public class Bank {
 //                .orElse(false);
         // TODO: Update to no longer use MiniMenu.doAction
         return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 33882418);
+    }
+
+    public static boolean loadLastPreset() {
+        var obj = SceneObjectQuery.newQuery()
+                .option(LAST_PRESET_OPTION).results().nearest();
+        var npc = NpcQuery.newQuery().option(LAST_PRESET_OPTION).results().nearest();
+        var useObj = true;
+
+        log.atInfo().log("Object is " + (obj != null ? "not null" : "null"));
+        log.atInfo().log("Npc is " + (npc != null ? "not null" : "null"));
+
+        if (obj != null && npc != null) {
+            log.atInfo().log("Distance.to(obj): " + Distance.to(obj));
+            log.atInfo().log("Distance.to(npc): " + Distance.to(npc));
+            var objDist = Distance.to(obj);
+            var npcDist = Distance.to(npc);
+            if (!Double.isNaN(objDist) && !Double.isNaN(npcDist))
+                useObj = Distance.to(obj) < Distance.to(npc);
+            log.atInfo().log("useObj: " + useObj);
+        }
+        if (obj != null && useObj) {
+            log.atInfo().log("Interacting via Object: " + obj.getName());
+            return obj.interact(LAST_PRESET_OPTION);
+        } else if (npc != null) {
+            log.atInfo().log("Interacting via Npc: " + npc.getName());
+            return npc.interact(LAST_PRESET_OPTION);
+        }
+        return false;
     }
 
     /**
