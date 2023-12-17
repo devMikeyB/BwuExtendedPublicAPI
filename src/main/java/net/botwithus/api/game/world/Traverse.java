@@ -7,15 +7,37 @@ import net.botwithus.rs3.game.Coordinate;
 import net.botwithus.rs3.game.Travel;
 
 public class Traverse {
-    public static boolean to(Coordinate coordinate) {
+    public static boolean to(Coordinate Coordinate) {
         var player = Client.getLocalPlayer();
-        if (player == null) {
+        if (player == null)
             return false;
+        if (player.distanceTo(Coordinate) > 60) {
+            return bresenhamWalkTo(Coordinate, false, RandomGenerator.nextInt(38, 68));
+        } else {
+            return Travel.walkTo(Coordinate);
         }
-        return Travel.walkTo(coordinate);
     }
 
     public static boolean to(Area area) {
-        return to(area.getCoordinates().get(RandomGenerator.nextInt(area.getCoordinates().size())));
+        return to(area.getRandomCoordinate());
+    }
+
+    public static boolean bresenhamWalkTo(Coordinate coordinate, boolean minimap, int stepSize) {
+        var player = Client.getLocalPlayer();
+        if (player == null) {
+            return false;
+        } else {
+            Coordinate currentCoordinate = player.getCoordinate();
+            int dx = coordinate.getX() - currentCoordinate.getX();
+            int dy = coordinate.getY() - currentCoordinate.getY();
+            int distance = (int)Math.hypot(dx, dy);
+            if (distance > stepSize) {
+                int stepX = currentCoordinate.getX() + dx * stepSize / distance;
+                int stepY = currentCoordinate.getY() + dy * stepSize / distance;
+                return Travel.walkTo(stepX, stepY, minimap);
+            } else {
+                return Travel.walkTo(coordinate);
+            }
+        }
     }
 }
