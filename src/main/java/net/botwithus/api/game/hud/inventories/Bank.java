@@ -1,6 +1,7 @@
 package net.botwithus.api.game.hud.inventories;
 
 import com.google.common.flogger.FluentLogger;
+import net.botwithus.api.util.collection.Pair;
 import net.botwithus.rs3.game.Distance;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
@@ -293,55 +294,63 @@ public class Bank {
         return deposit(item, option);
     }
 
+    public static boolean depositAll(ComponentQuery query) {
+        var item = query.results().first();
+        return deposit(item, item.getOptions().contains("Deposit-All") ? 7 : 1);
+    }
+
     public static boolean deposit(Component comp, int option) {
         return comp != null && comp.interact(option) && Execution.delay(RandomGenerator.nextInt(400, 700));
     }
 
     public static boolean depositAll(String... itemNames) {
         return !InventoryItemQuery.newQuery(93).name(itemNames).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
+                i -> depositAll(ComponentQuery.newQuery(517).item(i))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(int... itemIds) {
         return !InventoryItemQuery.newQuery(93).ids(itemIds).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
+                i -> depositAll(ComponentQuery.newQuery(517).item(i))
         ).toList().contains(false);
     }
 
     public static boolean depositAll(Pattern... patterns) {
         return !InventoryItemQuery.newQuery(93).name(patterns).results().stream().map(Item::getId).distinct().map(
-                i -> deposit(ComponentQuery.newQuery(517).item(i), 7)
+                i -> depositAll(ComponentQuery.newQuery(517).item(i))
         ).toList().contains(false);
     }
 
     public static boolean depositAllExcept(String... itemNames) {
         var nameSet = new HashSet<>(Arrays.asList(itemNames));
         var idMap = Backpack.getItems().stream().filter(i -> Arrays.stream(itemNames).toList().contains(i)).collect(Collectors.toMap(Item::getId, Item::getName));
-        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
-                i -> !nameSet.contains(idMap.get(i.getItemId())))
+        var items = ComponentQuery.newQuery(517).results().stream().filter(
+                i -> !nameSet.contains(idMap.get(i.getItemId())) && (i.getOptions().contains("Deposit-All") || i.getOptions().contains("Deposit-1")))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
+        return !items.stream().map(i -> depositAll(ComponentQuery.newQuery(517).item(i))).toList().contains(false);
     }
 
     public static boolean depositAllExcept(int... ids) {
         var idSet = Arrays.stream(ids).boxed().collect(Collectors.toSet());
-        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
-                i -> !idSet.contains(i.getItemId()))
+        var items = ComponentQuery.newQuery(517).results().stream().filter(
+                        i -> !idSet.contains(i.getItemId()) && (i.getOptions().contains("Deposit-All") || i.getOptions().contains("Deposit-1")))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
+        return !items.stream().map(i -> depositAll(ComponentQuery.newQuery(517).item(i))).toList().contains(false);
     }
 
     public static boolean depositAllExcept(Pattern... patterns) {
         var idMap = Backpack.getItems().stream().filter(i -> i.getName() != null && Arrays.stream(patterns).map(p -> p.matcher(i.getName()).matches()).toList().contains(true))
                 .collect(Collectors.toMap(Item::getId, Item::getName));
-        var items = ComponentQuery.newQuery(517).option("Deposit-All").results().stream().filter(
-                i -> !idMap.containsKey(i.getItemId()))
+        var items = ComponentQuery.newQuery(517).results().stream().filter(
+                        i -> !idMap.containsKey(i.getItemId()) && (i.getOptions().contains("Deposit-All") || i.getOptions().contains("Deposit-1")))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-        return !items.stream().map(i -> deposit(ComponentQuery.newQuery(517).item(i), 7)).toList().contains(false);
+//        for (var item : items) {
+//            log.atInfo().log("[Bank#depositAllExcept] " + item.getRight().getItemId() + ": " + Arrays.toString(item.getRight().getOptions().toArray(String[]::new)));
+//        }
+        return !items.stream().map(i -> depositAll(ComponentQuery.newQuery(517).item(i))).toList().contains(false);
     }
 
     /**

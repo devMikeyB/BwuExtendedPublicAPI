@@ -26,6 +26,7 @@ dependencies {
     //implementation("net.botwithus.rs3:api:1.0.0-SNAPSHOT")
     implementation("net.botwithus.rs3:botwithus-api:1.0.0-SNAPSHOT")
     implementation("org.jetbrains:annotations:24.0.0")
+    implementation("org.projectlombok:lombok:1.18.22")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
