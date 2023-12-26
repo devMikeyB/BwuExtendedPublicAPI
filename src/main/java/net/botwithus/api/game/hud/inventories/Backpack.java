@@ -2,6 +2,7 @@ package net.botwithus.api.game.hud.inventories;
 
 import net.botwithus.rs3.game.Item;
 import net.botwithus.rs3.game.queries.builders.ItemQuery;
+import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
 
 import java.util.List;
@@ -199,6 +200,10 @@ public final class Backpack {
 
     public static List<Item> getItems() {
         return BACKPACK.getItems();
+    }
+
+    public static List<Item> getItemsWithOption(String option) {
+        return BACKPACK.getItemsWithOptions(option);
     }
 
     public static Item getSelectedItem() {

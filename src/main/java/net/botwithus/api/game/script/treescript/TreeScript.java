@@ -50,7 +50,7 @@ public abstract class TreeScript extends LoopingScript {
     @Override
     public void onLoop() {
         if (rootTask != null) {
-            TreeTask.traverse(rootTask);
+            TreeTask.traverse(this, rootTask);
         } else {
             rootTask = getRootTask();
         }

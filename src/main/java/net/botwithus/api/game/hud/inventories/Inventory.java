@@ -233,9 +233,9 @@ public class Inventory implements Iterable<Item> {
         ResultSet<Item> results = InventoryItemQuery.newQuery(id).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: " + item.getId());
+//            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(item.getId()).componentIndex(componentIndex).withOptionMapper(optionMapper).results();
-            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: QueryResults: " + queryResults.size());
+//            log.atInfo().log("[Inventory#interact(slot="+slot+", option="+option+")]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -302,6 +302,11 @@ public class Inventory implements Iterable<Item> {
             }
         }
         return items;
+    }
+
+    public List<Item> getItemsWithOptions(String option) {
+        var idsWithOption = ComponentQuery.newQuery(interfaceIndex).option(option).componentIndex(componentIndex).results().stream().mapToInt(Component::getItemId);
+        return InventoryItemQuery.newQuery(id).ids(idsWithOption.toArray()).results().stream().toList();
     }
 
     /**

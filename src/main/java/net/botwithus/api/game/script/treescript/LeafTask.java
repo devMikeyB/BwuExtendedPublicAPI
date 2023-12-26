@@ -1,9 +1,15 @@
 package net.botwithus.api.game.script.treescript;
 
+import net.botwithus.rs3.script.Script;
+
 /**
  * Represents a leaf task in a tree. This task does not have any child tasks.
  */
 public abstract class LeafTask extends TreeTask {
+
+    public LeafTask(Script script) {
+        super(script);
+    }
 
     /** {@inheritDoc} */
     @Override

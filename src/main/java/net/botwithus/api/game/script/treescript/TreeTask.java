@@ -2,6 +2,7 @@ package net.botwithus.api.game.script.treescript;
 
 import com.google.common.flogger.FluentLogger;
 import net.botwithus.api.game.script.treescript.interfaces.ITreeTask;
+import net.botwithus.rs3.script.Script;
 
 /**
  * Represents a task in a tree structure. This is an abstract base class for
@@ -9,6 +10,18 @@ import net.botwithus.api.game.script.treescript.interfaces.ITreeTask;
  */
 public abstract class TreeTask implements ITreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
+    private Script script;
+    private String desc = "";
+
+    public TreeTask(Script script) {
+        this.script = script;
+    }
+
+    public TreeTask(Script script, String desc) {
+        this.script = script;
+        this.desc = desc;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -31,18 +44,29 @@ public abstract class TreeTask implements ITreeTask {
     @Override
     public abstract boolean isLeaf();
 
+    public String getDesc() {
+        return desc;
+    }
+
+    public Script getScript() {
+        return script;
+    }
+
     /**
      * Traverses the given tree of tasks, executing the appropriate task
      * based on the result of validation.
      * @param treeTask The root task of the tree to traverse.
      */
-    public static void traverse(TreeTask treeTask) {
+    public static void traverse(Script script, TreeTask treeTask) {
         var validate = treeTask.validate();
         if (!treeTask.isLeaf()) {
-            log.atInfo().log("[TreeTaskBranch] " + treeTask.getClass().getSimpleName() + ": " + validate);
-            traverse(validate ? treeTask.successTask() : treeTask.failureTask());
+            var msg = "[TreeTaskBranch] " + (treeTask.getDesc().length() > 0 ? treeTask.getDesc() : treeTask.getClass().getSimpleName()) + ": " + validate;
+            log.atInfo().log(msg);
+            script.println(msg);
+            traverse(script, validate ? treeTask.successTask() : treeTask.failureTask());
         } else {
             treeTask.execute();
         }
     }
+
 }

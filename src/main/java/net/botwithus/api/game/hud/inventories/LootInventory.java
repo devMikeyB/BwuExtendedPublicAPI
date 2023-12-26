@@ -29,21 +29,21 @@ public final class LootInventory {
     /**
      * Checks if any items match the given id
      *
-     * @param id the id to check the items against
+     * @param ids the id to check the items against
      * @return true if an item matches the id
      */
-    public static boolean contains(int id) {
-        return LOOT_INVENTORY.contains(id);
+    public static boolean contains(int... ids) {
+        return LOOT_INVENTORY.contains(ids);
     }
 
     /**
      * Checks if any items match the given name
      *
-     * @param name the name to check the items against
+     * @param names the name to check the items against
      * @return true if an item matches the name
      */
-    public static boolean contains(String name) {
-        return LOOT_INVENTORY.contains(name);
+    public static boolean contains(String... names) {
+        return LOOT_INVENTORY.contains(names);
     }
 
     /**

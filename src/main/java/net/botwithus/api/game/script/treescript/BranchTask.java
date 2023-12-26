@@ -1,5 +1,7 @@
 package net.botwithus.api.game.script.treescript;
 
+import net.botwithus.rs3.script.Script;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -11,10 +13,12 @@ public class BranchTask extends TreeTask {
     private Permissive[] permissives = new Permissive[0];
     private TreeTask successTask, failureTask;
 
-    public BranchTask() {
+    public BranchTask(Script script, String desc) {
+        super(script, desc);
     }
 
-    public BranchTask(TreeTask successTask, TreeTask failureTask, Permissive[] permissives) {
+    public BranchTask(Script script, String desc, TreeTask successTask, TreeTask failureTask, Permissive[] permissives) {
+        super(script, desc);
         this.permissives = permissives;
         this.successTask = successTask;
         this.failureTask = failureTask;
@@ -35,7 +39,9 @@ public class BranchTask extends TreeTask {
     /** {@inheritDoc} */
     @Override
     public boolean validate() {
-        return !Arrays.stream(permissives).map(Permissive::isMet).collect(Collectors.toSet()).contains(false);
+        var val = !Arrays.stream(permissives).map(Permissive::isMet).collect(Collectors.toSet()).contains(false);
+        getScript().println("[Branch] " + getDesc() + ": " + val);
+        return val;
     }
 
     /** {@inheritDoc} */
@@ -58,4 +64,5 @@ public class BranchTask extends TreeTask {
     public void setPermissives(Permissive[] permissives) {
         this.permissives = permissives;
     }
+
 }
