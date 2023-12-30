@@ -1,7 +1,6 @@
 package net.botwithus.api.game.hud.inventories;
 
 import com.google.common.flogger.FluentLogger;
-import net.botwithus.api.util.collection.Pair;
 import net.botwithus.rs3.game.Distance;
 import net.botwithus.rs3.game.hud.interfaces.Component;
 import net.botwithus.rs3.game.hud.interfaces.Interfaces;
@@ -208,6 +207,7 @@ public class Bank {
      * @param option the doAction option to execute on the item.
      */
     public static boolean withdraw(InventoryItemQuery query, int option) {
+        setTransferOption(TransferOptionType.ALL);
         Item item = query.results().first();
         return item != null && BANK.interact(item.getSlot(), option);
     }
@@ -261,15 +261,15 @@ public class Bank {
      * @return true if the item was successfully withdrawn, false otherwise.
      */
     public static boolean withdrawAll(String name) {
-        return withdraw(InventoryItemQuery.newQuery().name(name), 6);
+        return withdraw(InventoryItemQuery.newQuery().name(name), 1);
     }
 
     public static boolean withdrawAll(int id) {
-        return withdraw(InventoryItemQuery.newQuery().ids(id), 6);
+        return withdraw(InventoryItemQuery.newQuery().ids(id), 1);
     }
 
     public static boolean withdrawAll(Pattern pattern) {
-        return withdraw(InventoryItemQuery.newQuery().name(pattern), 6);
+        return withdraw(InventoryItemQuery.newQuery().name(pattern), 1);
     }
 
     /**
@@ -278,6 +278,7 @@ public class Bank {
      * @return true if the items were successfully deposited, false otherwise
      */
     public static boolean depositAll() {
+        setTransferOption(TransferOptionType.ALL);
         var comp = ComponentQuery.newQuery(517).option("Deposit carried items").results().first();
         return comp != null && comp.interact(1);
     }
@@ -296,10 +297,11 @@ public class Bank {
 
     public static boolean depositAll(ComponentQuery query) {
         var item = query.results().first();
-        return deposit(item, item.getOptions().contains("Deposit-All") ? 7 : 1);
+        return deposit(item, 1);//item.getOptions().contains("Deposit-All") ? 7 : 1);
     }
 
     public static boolean deposit(Component comp, int option) {
+        setTransferOption(TransferOptionType.ALL);
         return comp != null && comp.interact(option) && Execution.delay(RandomGenerator.nextInt(400, 700));
     }
 
@@ -347,9 +349,6 @@ public class Bank {
                         i -> !idMap.containsKey(i.getItemId()) && (i.getOptions().contains("Deposit-All") || i.getOptions().contains("Deposit-1")))
                 .map(Component::getItemId)
                 .collect(Collectors.toSet());
-//        for (var item : items) {
-//            log.atInfo().log("[Bank#depositAllExcept] " + item.getRight().getItemId() + ": " + Arrays.toString(item.getRight().getOptions().toArray(String[]::new)));
-//        }
         return !items.stream().map(i -> depositAll(ComponentQuery.newQuery(517).item(i))).toList().contains(false);
     }
 
@@ -415,5 +414,28 @@ public class Bank {
     public static int getVarbitValue(int slot, int varbitId) {
         var item = InventoryItemQuery.newQuery(95).slots(slot).results().first();
         return item != null ? item.getVarbitValue(varbitId) : Integer.MIN_VALUE;
+    }
+
+    public static boolean setTransferOption(TransferOptionType transferoptionType) {
+        var depositOptionState = VarManager.getVarbitValue(WITHDRAW_TYPE_VARBIT_ID);
+        return depositOptionState == transferoptionType.getVarbitStateValue() || MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 33882215);
+    }
+}
+
+enum TransferOptionType {
+    ONE(2),
+    FIVE(3),
+    TEN(4),
+    ALL(7),
+    X(5);
+
+    private int varbitStateValue;
+
+    TransferOptionType(int varbitStateValue) {
+        this.varbitStateValue = varbitStateValue;
+    }
+
+    public int getVarbitStateValue() {
+        return varbitStateValue;
     }
 }
