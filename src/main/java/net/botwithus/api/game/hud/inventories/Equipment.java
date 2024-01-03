@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public final class Equipment {
 
-    public static final Inventory EQUIPMENT = new Inventory(94, 1464, 15, i -> i + 1);
+    public static final Inventory EQUIPMENT = new EquipmentInventory();
 
     private Equipment() {
     }
