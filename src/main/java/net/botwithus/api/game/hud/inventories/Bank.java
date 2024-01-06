@@ -37,6 +37,8 @@ public class Bank {
     private static final Pattern BANK_OPTION_PATTERN = Pattern.compile("^.*(Bank|Use).*$");
     private static final String LAST_PRESET_OPTION = "Load Last Preset from";
 
+    private static int previousLoadedPreset = -1;
+
     private Bank() {
 
     }
@@ -50,7 +52,9 @@ public class Bank {
 //        var obj = SceneObjectQuery.newQuery()
 //                .name(BANK_NAME_PATTERN)
 //                .option(BANK_OPTION_PATTERN).results().nearest();
-        var obj = SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Use").or(SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Bank")).results().nearest();
+        var obj = SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Use")
+                .or(SceneObjectQuery.newQuery().name(BANK_NAME_PATTERN).option("Bank"))
+                .or(SceneObjectQuery.newQuery().name("Shantay chest")).results().nearest();
         var npc = NpcQuery.newQuery().option("Bank").results().nearest();
         log.atInfo().log("[Bank] Just a test");
         var useObj = true;
@@ -397,11 +401,15 @@ public class Bank {
     public static boolean loadPreset(int presetNumber) {
         int presetBrowsingValue = VarManager.getVarbitValue(PRESET_BROWSING_VARBIT_ID);
         if ((presetNumber >= 10 && presetBrowsingValue < 1) || (presetNumber < 10 && presetBrowsingValue > 0)) {
-            Execution.delay(RandomGenerator.nextInt(300, 700));
             MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, 100, 33882231);
+            Execution.delay(RandomGenerator.nextInt(300, 700));
         }
-        return MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9,
+        var result = MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, presetNumber % 9,
                                  33882231);//presetComp != null && presetComp.interact("Load");
+        if (result) {
+            previousLoadedPreset = presetNumber;
+        }
+        return result;
     }
 
     /**
@@ -418,7 +426,11 @@ public class Bank {
 
     public static boolean setTransferOption(TransferOptionType transferoptionType) {
         var depositOptionState = VarManager.getVarbitValue(WITHDRAW_TYPE_VARBIT_ID);
-        return depositOptionState == transferoptionType.getVarbitStateValue() || MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 33882215);
+        return depositOptionState == transferoptionType.getVarbitStateValue() || MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1,-1, 33882215);
+    }
+
+    public static int getPreviousLoadedPreset() {
+        return previousLoadedPreset;
     }
 }
 

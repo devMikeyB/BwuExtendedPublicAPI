@@ -1,7 +1,13 @@
 package net.botwithus.api.util.time;
 
+import java.time.Instant;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Stopwatch {
-    private long startMs;
+    private Instant start;
+    private final List<Instant> breakpoints = new ArrayList<>();
 
     public Stopwatch() {
     }
@@ -13,19 +19,31 @@ public class Stopwatch {
     }
 
     public void start() {
-        this.startMs = System.currentTimeMillis();
+        this.start = Instant.now();
     }
 
     public long elapsed() {
-        return System.currentTimeMillis() - this.startMs;
+        if (start == null) {
+            return 0;
+        }
+        Instant now = Instant.now();
+        Duration pausedDuration = Duration.ZERO;
+        for (int i = 0; i < breakpoints.size(); i += 2) {
+            Instant pauseStart = breakpoints.get(i);
+            Instant pauseEnd = (i + 1 < breakpoints.size()) ? breakpoints.get(i + 1) : now;
+            pausedDuration = pausedDuration.plus(Duration.between(pauseStart, pauseEnd));
+        }
+        return Duration.between(start, now).minus(pausedDuration).toMillis();
     }
 
-    public boolean startIfElapsed(long ms) {
-        if (this.elapsed() >= ms) {
-            this.start();
-            return true;
-        } else {
-            return false;
+    public void pause() {
+        breakpoints.add(Instant.now());
+    }
+
+    public void resume() {
+        // Resume only if the last pause hasn't been ended (i.e., if the size is odd)
+        if (breakpoints.size() % 2 != 0) {
+            breakpoints.add(Instant.now());
         }
     }
 }
