@@ -42,17 +42,20 @@ public class Timer {
 
     public void setRemainingTime(long time) {
         timerDuration = time;
+        hasStarted = true;
         stopWatch.start();
     }
 
     public void reset() {
         forceExpired = false;
+        hasStarted = true;
         timerDuration = minTime + (long) (Math.random() * (maxTime - minTime));
         stopWatch.start();
     }
 
     public void restartSameTimer() {
         forceExpired = false;
+        hasStarted = true;
         stopWatch.start();
     }
 

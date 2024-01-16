@@ -10,6 +10,7 @@ import net.botwithus.rs3.script.Script;
  */
 public abstract class TreeTask implements ITreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    protected boolean latestValidate = false;
 
     private Script script;
     private String desc = "";
@@ -59,6 +60,7 @@ public abstract class TreeTask implements ITreeTask {
      */
     public static void traverse(Script script, TreeTask treeTask) {
         var validate = treeTask.validate();
+        treeTask.setLatestValidate(validate);
         if (!treeTask.isLeaf()) {
             var msg = "[TreeTaskBranch] " + (treeTask.getDesc().length() > 0 ? treeTask.getDesc() : treeTask.getClass().getSimpleName()) + ": " + validate;
             log.atInfo().log(msg);
@@ -69,4 +71,11 @@ public abstract class TreeTask implements ITreeTask {
         }
     }
 
+    public boolean getLatestValidate() {
+        return latestValidate;
+    }
+
+    public void setLatestValidate(boolean lastLoopValidate) {
+        this.latestValidate = lastLoopValidate;
+    }
 }

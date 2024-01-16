@@ -1,10 +1,8 @@
 package net.botwithus.api.game.script.treescript;
 
 import com.google.common.flogger.FluentLogger;
+import net.botwithus.api.game.script.treescript.permissive.Permissive;
 import net.botwithus.rs3.script.Script;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Represents a branch task in a tree. This task is not a leaf node and
@@ -14,8 +12,6 @@ public class BranchTask extends TreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private Permissive[] permissives = new Permissive[0];
     private TreeTask successTask, failureTask;
-
-    private boolean previousValidateFromLastLoop = false;
 
     public BranchTask(Script script, String desc) {
         super(script, desc);
@@ -43,7 +39,6 @@ public class BranchTask extends TreeTask {
     /** {@inheritDoc} */
     @Override
     public boolean validate() {
-//        var val = !Arrays.stream(permissives).map(Permissive::isMet).collect(Collectors.toSet()).contains(false);
         var val = true;
         Permissive curPerm = null;
         try {
@@ -57,8 +52,7 @@ public class BranchTask extends TreeTask {
         } catch (Exception e) {
             log.atSevere().withCause(e).log("Could not process permissive: " + (curPerm != null ? curPerm.getName() : "null"));
         }
-//        getScript().println("[Branch] " + getDesc() + ": " + val);
-        previousValidateFromLastLoop = val;
+        latestValidate = val;
         return val;
     }
 
@@ -83,7 +77,4 @@ public class BranchTask extends TreeTask {
         this.permissives = permissives;
     }
 
-    public boolean getLatestValidate() {
-        return previousValidateFromLastLoop;
-    }
 }
