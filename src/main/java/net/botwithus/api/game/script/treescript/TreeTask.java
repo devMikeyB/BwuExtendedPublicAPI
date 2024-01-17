@@ -2,6 +2,7 @@ package net.botwithus.api.game.script.treescript;
 
 import com.google.common.flogger.FluentLogger;
 import net.botwithus.api.game.script.treescript.interfaces.ITreeTask;
+import net.botwithus.api.game.script.treescript.permissive.Result;
 import net.botwithus.rs3.script.Script;
 
 /**
@@ -10,7 +11,7 @@ import net.botwithus.rs3.script.Script;
  */
 public abstract class TreeTask implements ITreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
-    protected boolean latestValidate = false;
+    protected Result latestValidate = new Result(false);
 
     private Script script;
     private String desc = "";
@@ -71,11 +72,11 @@ public abstract class TreeTask implements ITreeTask {
         }
     }
 
-    public boolean getLatestValidate() {
+    public Result getLatestValidate() {
         return latestValidate;
     }
 
     public void setLatestValidate(boolean lastLoopValidate) {
-        this.latestValidate = lastLoopValidate;
+        this.latestValidate = new Result(lastLoopValidate);
     }
 }

@@ -2,6 +2,7 @@ package net.botwithus.api.game.script.treescript;
 
 import com.google.common.flogger.FluentLogger;
 import net.botwithus.api.game.script.treescript.permissive.Permissive;
+import net.botwithus.api.game.script.treescript.permissive.Result;
 import net.botwithus.rs3.script.Script;
 
 /**
@@ -10,14 +11,14 @@ import net.botwithus.rs3.script.Script;
  */
 public class BranchTask extends TreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
-    private Permissive[] permissives = new Permissive[0];
+    private Permissive[][] permissives = new Permissive[][]{new Permissive[0]};
     private TreeTask successTask, failureTask;
 
     public BranchTask(Script script, String desc) {
         super(script, desc);
     }
 
-    public BranchTask(Script script, String desc, TreeTask successTask, TreeTask failureTask, Permissive[] permissives) {
+    public BranchTask(Script script, String desc, TreeTask successTask, TreeTask failureTask, Permissive[]... permissives) {
         super(script, desc);
         this.permissives = permissives;
         this.successTask = successTask;
@@ -42,17 +43,21 @@ public class BranchTask extends TreeTask {
         var val = true;
         Permissive curPerm = null;
         try {
-            for (var perm : permissives) {
-                curPerm = perm;
-                if (!perm.isMet()) {
-                    val = false;
-                    break;
+            for (var group : permissives) {
+                for (var perm : group) {
+                    curPerm = perm;
+                    if (!perm.isMet()) {
+                        val = false;
+                        break;
+                    }
                 }
+                if (val)
+                    break;
             }
         } catch (Exception e) {
             log.atSevere().withCause(e).log("Could not process permissive: " + (curPerm != null ? curPerm.getName() : "null"));
         }
-        latestValidate = val;
+        latestValidate = new Result(val);
         return val;
     }
 
@@ -69,11 +74,11 @@ public class BranchTask extends TreeTask {
         return false;
     }
 
-    public Permissive[] getPermissives() {
+    public Permissive[][] getPermissives() {
         return permissives;
     }
 
-    public void setPermissives(Permissive[] permissives) {
+    public void setPermissives(Permissive[]... permissives) {
         this.permissives = permissives;
     }
 

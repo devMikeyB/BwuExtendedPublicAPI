@@ -10,11 +10,11 @@ public class Result {
     }
 
     public boolean isValidResult() {
-        return System.currentTimeMillis() - resultTime <= 5000;
+        return System.currentTimeMillis() - resultTime <= 2000;
     }
 
     public ResultType getResultType() {
-        return !isValidResult() ? ResultType.INVALID : ResultType.getResult(result);
+        return !isValidResult() ? ResultType.EXPIRED : ResultType.getResult(result);
     }
 }
 

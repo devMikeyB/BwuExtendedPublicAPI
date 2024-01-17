@@ -5,7 +5,8 @@ import net.botwithus.api.util.StringFormatter;
 public enum ResultType {
     MET,
     NOT_MET,
-    INVALID;
+    EXPIRED;
+
 
     public static ResultType getResult(boolean value) {
         return value ? ResultType.MET : ResultType.NOT_MET;
