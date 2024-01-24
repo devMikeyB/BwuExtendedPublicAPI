@@ -1,20 +1,32 @@
 package net.botwithus.api.game.script.treescript.permissive;
 
-public class Result {
-    private boolean result;
+public class Result<T> {
+    private T result;
+    private int expirationTime;
     private long resultTime;
 
-    public Result(boolean result) {
+    public Result(T result) {
         this.result = result;
+        expirationTime = 2000;
+        resultTime = System.currentTimeMillis();
+    }
+
+    public Result(T result, int expirationTime) {
+        this.result = result;
+        this.expirationTime = expirationTime;
         resultTime = System.currentTimeMillis();
     }
 
     public boolean isValidResult() {
-        return System.currentTimeMillis() - resultTime <= 2000;
+        return System.currentTimeMillis() - resultTime <= expirationTime;
     }
 
-    public ResultType getResultType() {
-        return !isValidResult() ? ResultType.EXPIRED : ResultType.getResult(result);
+    public T getResult() {
+        return result;
+    }
+
+    public ResultType getBooleanResultType() {
+        return !isValidResult() ? ResultType.EXPIRED : ResultType.getResult((boolean)result);
     }
 }
 

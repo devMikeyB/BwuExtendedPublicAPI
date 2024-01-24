@@ -10,6 +10,9 @@ public abstract class LeafTask extends TreeTask {
     public LeafTask(Script script) {
         super(script);
     }
+    public LeafTask(Script script, String desc) {
+        super(script, desc);
+    }
 
     /** {@inheritDoc} */
     @Override

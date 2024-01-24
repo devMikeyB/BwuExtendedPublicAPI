@@ -37,6 +37,7 @@ public class Timer {
     }
 
     public void setExpired() {
+        hasStarted = true;
         forceExpired = true;
     }
 
@@ -61,8 +62,8 @@ public class Timer {
 
     public void start() {
         forceExpired = false;
-        stopWatch.start();
         hasStarted = true;
+        stopWatch.start();
     }
 
     public void stop() {

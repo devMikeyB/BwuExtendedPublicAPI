@@ -40,25 +40,30 @@ public class BranchTask extends TreeTask {
     /** {@inheritDoc} */
     @Override
     public boolean validate() {
-        var val = true;
+        var groupIsValid = false;
         Permissive curPerm = null;
+
         try {
             for (var group : permissives) {
+                groupIsValid = true; // Assume the group is valid initially
                 for (var perm : group) {
                     curPerm = perm;
                     if (!perm.isMet()) {
-                        val = false;
-                        break;
+                        groupIsValid = false; // Set to false if any permissive in the group is not met
+                        break; // No need to check further in this group
                     }
                 }
-                if (val)
-                    break;
+                if (groupIsValid) {
+                    break; // A valid group is found, no need to check further groups
+                }
             }
         } catch (Exception e) {
+            groupIsValid = false; // Ensure validation fails in case of an exception
             log.atSevere().withCause(e).log("Could not process permissive: " + (curPerm != null ? curPerm.getName() : "null"));
         }
-        latestValidate = new Result(val);
-        return val;
+
+        latestValidate = new Result(groupIsValid);
+        return groupIsValid;
     }
 
     /** {@inheritDoc} */

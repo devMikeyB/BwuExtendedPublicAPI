@@ -16,18 +16,29 @@ public class Summoning {
     private static final int MINUTES_REMAINING_VARBIT_ID = 6055, CURRENT_HEALTH_VARBIT_ID = 19034, TOTAL_HEALTH_VARBIT_ID = 27403, VARBIT_CURRENT_SUMMONING_POINTS = 41524;
 
     private static final int MINUTE_REMAINING_VARP_ID = 1786, HEALTH_VARP_ID = 5194, VARP_CURRENT_LEFT_CLICK_OPTION = 1789, VARP_SPECIAL_MOVE_POINTS = 1787;
+    private static final int SCROLL_COUNT_STORED_ON_FAMILIAR_VARBIT_ID = 25412, ACTIVE_FAMILIAR_POUCH_VARBIT_ID = 1831;
 
     /**
      * Gets the remaining time for the currently summoned familiar (in minutes)
      */
     public static int getMinutesRemaining() {
         var val = VarManager.getVarbitValue(MINUTES_REMAINING_VARBIT_ID);
-        return val >= 0 ? val : 0;
+        return Math.max(val, 0);
+    }
+
+    public static int getFamiliarScrollCount() {
+        var val = VarManager.getVarbitValue(SCROLL_COUNT_STORED_ON_FAMILIAR_VARBIT_ID);
+        return Math.max(val, 0);
     }
 
     //TODO: Need to replace MiniMenu.doAction call
     public static void triggerSpecial() {
         MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, 43384870);
+    }
+
+    public static int getFamiliarPouchId() {
+        var val = VarManager.getVarValue(VarDomainType.PLAYER, ACTIVE_FAMILIAR_POUCH_VARBIT_ID);
+        return Math.max(val, 0);
     }
 
     /**
