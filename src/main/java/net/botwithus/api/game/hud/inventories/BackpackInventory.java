@@ -8,6 +8,7 @@ import net.botwithus.rs3.game.queries.results.ResultSet;
 import net.botwithus.rs3.script.ScriptConsole;
 
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class BackpackInventory extends Inventory {
     private static final Function<Integer, Integer> OPTION_MAPPER = i -> switch (i) {
@@ -26,6 +27,21 @@ public class BackpackInventory extends Inventory {
 
     @Override
     public boolean interact(String name, int option) {
+        ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).name(name).results();
+        Item item = results.first();
+        if (item != null) {
+            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
+                    item.getId()).componentIndex(componentIndex).results();
+            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            var result = queryResults.first();
+            return result != null && result.interact(option);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean interact(Pattern name, int option) {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).name(name).results();
         Item item = results.first();
         if (item != null) {

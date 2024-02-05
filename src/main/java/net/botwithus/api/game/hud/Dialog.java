@@ -8,6 +8,7 @@ import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,11 +32,12 @@ public class Dialog {
     @NotNull
     public static List<String> getOptions() {
         if (Interfaces.isOpen(1188)) {
-            return ComponentQuery.newQuery(1188).componentIndex(8, 13, 18, 23, 28).type(4).results().stream().map(Component::getText).toList();
+            List<String> options = new ArrayList<>(ComponentQuery.newQuery(1188).type(4).results().stream().map(Component::getText).toList());
+            options.removeIf(result -> result.getBytes(StandardCharsets.UTF_8).length < 3);
+            return options;
         }
         return Collections.emptyList();
     }
-
     public static boolean hasOption(String string) {
         return getOptions().stream().anyMatch(i -> i.contentEquals(string));
     }
@@ -43,6 +45,19 @@ public class Dialog {
     public static boolean interact(String optionText) {
         if (Interfaces.isOpen(1188)) {
             var result = ComponentQuery.newQuery(1188).type(4).text(optionText, String::contentEquals).results().first();
+            if (result != null) {
+                int slot = -1;
+                int size = getOptions().size();
+                for (int i = 0; i < size; i++) {
+                    if (getOptions().get(i).contains(optionText)) {
+                        slot = i;
+                    }
+                }
+                if (slot != -1) {
+                    int[] opcode = new int[]{77856776, 77856781, 77856786, 77856791, 77856796};
+                    return MiniMenu.interact(16, 0, -1, opcode[slot]);
+                }
+            }
             return result != null && result.interact();
         }
         return false;

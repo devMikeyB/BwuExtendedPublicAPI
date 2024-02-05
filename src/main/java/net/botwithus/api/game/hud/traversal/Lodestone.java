@@ -61,7 +61,13 @@ public enum Lodestone {
             Execution.delay(RandomGenerator.nextInt(600, 900));
         }
         if (MiniMenu.interact(ComponentAction.COMPONENT.getType(), 1, -1, interactId)) {
-            Execution.delay(RandomGenerator.nextInt(12000, 14000));
+            int wax = VarManager.getVarbitValue(28623);
+            int quick = VarManager.getVarbitValue(28622);
+            if (quick == 1 && wax > 0) {
+                Execution.delay(RandomGenerator.nextInt(4500, 6500));
+            } else {
+                Execution.delay(RandomGenerator.nextInt(12000, 14000));
+            }
             return true;
         } else {
             return false;
