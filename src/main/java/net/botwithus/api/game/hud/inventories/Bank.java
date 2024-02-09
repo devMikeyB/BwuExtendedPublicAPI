@@ -204,6 +204,14 @@ public class Bank {
         return !InventoryItemQuery.newQuery(95).name(itemNamePattern).results().isEmpty();
     }
 
+    public static int getCount(String... itemNames) {
+        return count(InventoryItemQuery.newQuery(95).name(itemNames));
+    }
+
+    public static int getCount(Pattern namePattern) {
+        return count(InventoryItemQuery.newQuery(95).name(namePattern));
+    }
+
     /**
      * Withdraws an item from the bank
      *

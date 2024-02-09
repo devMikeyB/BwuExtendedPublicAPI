@@ -10,6 +10,7 @@ import net.botwithus.rs3.game.js5.types.configs.ConfigManager;
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
 import net.botwithus.rs3.game.queries.builders.items.InventoryItemQuery;
 import net.botwithus.rs3.game.queries.results.ResultSet;
+import net.botwithus.rs3.script.config.ScriptConfig;
 import net.botwithus.rs3.util.Regex;
 
 import java.util.*;
@@ -261,7 +262,6 @@ public class Inventory implements Iterable<Item> {
      */
     public boolean interact(String name, int option) {
         Item item = InventoryItemQuery.newQuery(id).name(name).results().first();
-
         return item != null && interact(item.getSlot(), option);
     }
 
