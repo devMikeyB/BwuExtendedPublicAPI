@@ -74,8 +74,13 @@ public class Dialog {
     public static String getText() {
         if (isOpen()) {
             var result = ComponentQuery.newQuery(1184).componentIndex(10).results().first();
-            if (result != null) {
+            if (result != null && result.getText() != null) {
                 return result.getText();
+            } else {
+                result = ComponentQuery.newQuery(1189).componentIndex(3).results().first();
+                if (result != null && result.getText() != null) {
+                    return result.getText();
+                }
             }
         }
         return null;
