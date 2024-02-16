@@ -18,18 +18,21 @@ public class Dialog {
         return Interfaces.areAnyOpen(1184, 1186,  1188, 1189, 1191);
     }
 
-    public static boolean select() {
-        if (Interfaces.isOpen(1184)) {
-            return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, 77594639);
-        } else if (Interfaces.isOpen(1186)) {
-            return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, 77725700);
-        } else if (Interfaces.isOpen(1189)) {
-            return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, 77922323);
-        } else if (Interfaces.isOpen(1191)) {
-            return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, 78053391);
+public static boolean select() {
+    int[][] interfaceData = {
+        {1184, 77594639},
+        {1189, 77922323},
+        {1191, 78053391}
+    };
+
+    for (int[] data : interfaceData) {
+        if (Interfaces.isOpen(data[0])) {
+            return MiniMenu.interact(ComponentAction.DIALOGUE.getType(), 0, -1, data[1]);
         }
-        return false;
     }
+
+    return false;
+}
 
     @NotNull
     public static List<String> getOptions() {
@@ -86,18 +89,18 @@ public class Dialog {
         return null;
     }
 
-    @Nullable
-    public static String getTitle() {
-        Component result = null;
-        if (Interfaces.isOpen(1184)) {
-            result = ComponentQuery.newQuery(1184).type(4).results().first();
-        } else if (Interfaces.isOpen(1188)) {
-            result = ComponentQuery.newQuery(1188).type(4).results().first();
-        } else if (Interfaces.isOpen(1189)) {
-            result = ComponentQuery.newQuery(1189).type(4).results().first();
-        } else if (Interfaces.isOpen(1191)) {
-            result = ComponentQuery.newQuery(1191).type(4).results().first();
+@Nullable
+public static String getTitle() {
+    int[] interfaceIds = {1184, 1188, 1189, 1191};
+    Component result = null;
+
+    for (int id : interfaceIds) {
+        if (Interfaces.isOpen(id)) {
+            result = ComponentQuery.newQuery(id).type(4).results().first();
+            break;
         }
-        return result != null ? result.getText() : null;
     }
+
+    return result != null ? result.getText() : null;
+}
 }
