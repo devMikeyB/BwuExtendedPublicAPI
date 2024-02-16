@@ -5,4 +5,6 @@ public sealed interface PrayerAbility permits AncientBook, NormalBook {
     boolean isActive();
 
     boolean interact(int option);
+
+    String getName();
 }

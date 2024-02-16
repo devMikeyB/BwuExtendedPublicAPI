@@ -1,5 +1,6 @@
 package net.botwithus.api.game.hud.prayer;
 
+import net.botwithus.api.util.StringFormatter;
 import net.botwithus.rs3.game.js5.types.StructType;
 import net.botwithus.rs3.game.js5.types.configs.ConfigManager;
 import net.botwithus.rs3.game.queries.builders.components.ComponentQuery;
@@ -90,5 +91,10 @@ public enum AncientBook implements PrayerAbility {
         int spriteId = (int)getStruct().getParams().getOrDefault(735, -1);
         var component = ComponentQuery.newQuery(1458).spriteId(spriteId).results().first();
         return component != null && component.interact(option);
+    }
+
+    @Override
+    public String getName() {
+        return StringFormatter.toTitleCase(name());
     }
 }

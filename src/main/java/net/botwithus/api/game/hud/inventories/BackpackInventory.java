@@ -27,13 +27,15 @@ public class BackpackInventory extends Inventory {
 
     @Override
     public boolean interact(String name, int option) {
+        ScriptConsole.println("[xApi][BackpackInventory#interact(String name, int option)]: Searching for: " + name);
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).name(name).results();
         Item item = results.first();
         if (item != null) {
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(String name, int option)]: Found item: " + item.getName());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(String name, int option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(String name, int option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -45,10 +47,10 @@ public class BackpackInventory extends Inventory {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).name(name).results();
         Item item = results.first();
         if (item != null) {
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(Pattern name, int option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(Pattern name, int option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -60,10 +62,10 @@ public class BackpackInventory extends Inventory {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).name(name).results();
         Item item = results.first();
         if (item != null) {
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(String name, String option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(String name, String option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -75,10 +77,10 @@ public class BackpackInventory extends Inventory {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(int slot, int option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(int slot, int option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }
@@ -90,10 +92,10 @@ public class BackpackInventory extends Inventory {
         ResultSet<Item> results = InventoryItemQuery.newQuery(getId()).slots(slot).results();
         Item item = results.first();
         if (item != null) {
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: " + item.getId());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(int slot, String option)]: " + item.getId());
             ResultSet<Component> queryResults = ComponentQuery.newQuery(interfaceIndex).item(
                     item.getId()).componentIndex(componentIndex).results();
-            ScriptConsole.println("[xApi][BackpackInventory#interact(slot, option)]: QueryResults: " + queryResults.size());
+            ScriptConsole.println("[xApi][BackpackInventory#interact(int slot, String option)]: QueryResults: " + queryResults.size());
             var result = queryResults.first();
             return result != null && result.interact(option);
         }

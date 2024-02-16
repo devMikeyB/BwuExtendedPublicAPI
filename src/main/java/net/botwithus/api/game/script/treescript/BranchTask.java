@@ -5,6 +5,9 @@ import net.botwithus.api.game.script.treescript.permissive.Permissive;
 import net.botwithus.api.game.script.treescript.permissive.Result;
 import net.botwithus.rs3.script.Script;
 
+import java.util.concurrent.Callable;
+import lombok.SneakyThrows;
+
 /**
  * Represents a branch task in a tree. This task is not a leaf node and
  * must provide success and failure tasks based on validation.
@@ -13,11 +16,30 @@ public class BranchTask extends TreeTask {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private Permissive[][] permissives = new Permissive[][]{new Permissive[0]};
     private TreeTask successTask, failureTask;
+    private Callable<TreeTask> successTaskC, failureTaskC;
 
     public BranchTask(Script script, String desc) {
         super(script, desc);
     }
 
+    public BranchTask(Script script, String desc, Callable<TreeTask> successTask, TreeTask failureTask, Permissive[]... permissives) {
+        super(script, desc);
+        this.permissives = permissives;
+        this.successTaskC = successTask;
+        this.failureTask = failureTask;
+    }
+    public BranchTask(Script script, String desc, TreeTask successTask, Callable<TreeTask> failureTask, Permissive[]... permissives) {
+        super(script, desc);
+        this.permissives = permissives;
+        this.successTask = successTask;
+        this.failureTaskC = failureTask;
+    }
+    public BranchTask(Script script, String desc, Callable<TreeTask> successTask, Callable<TreeTask> failureTask, Permissive[]... permissives) {
+        super(script, desc);
+        this.permissives = permissives;
+        this.successTaskC = successTask;
+        this.failureTaskC = failureTask;
+    }
     public BranchTask(Script script, String desc, TreeTask successTask, TreeTask failureTask, Permissive[]... permissives) {
         super(script, desc);
         this.permissives = permissives;
@@ -34,11 +56,19 @@ public class BranchTask extends TreeTask {
     /** {@inheritDoc} */
     @Override
     public TreeTask successTask(){
+        if (successTaskC != null) {
+            try {
+                successTask = successTaskC.call();
+            } catch (Exception e){
+                log.atSevere().withCause(e).log("Failed to determine the result of the Callable<successTaskC>");
+            }
+        }
         return successTask;
     }
 
     /** {@inheritDoc} */
     @Override
+    @SneakyThrows
     public boolean validate() {
         var groupIsValid = false;
         Permissive curPerm = null;
@@ -68,7 +98,14 @@ public class BranchTask extends TreeTask {
 
     /** {@inheritDoc} */
     @Override
-    public TreeTask failureTask(){
+    public TreeTask failureTask() {
+        if (failureTaskC != null) {
+            try {
+                failureTask = failureTaskC.call();
+            } catch (Exception e){
+                log.atSevere().withCause(e).log("Failed to determine the result of the Callable<failureTaskC>");
+            }
+        }
         return failureTask;
     }
 
